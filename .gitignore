@@ -1,0 +1,4 @@
+*.class
+build/*
+*.pdf
+*.slr
