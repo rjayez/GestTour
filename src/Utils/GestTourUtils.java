@@ -5,6 +5,7 @@
  */
 package Utils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -61,5 +62,10 @@ public class GestTourUtils
         return produit/b;
     }
     
+    public static String getNomFichierSansExtension(String cheminFichier)
+    {
+            File file = new File(cheminFichier);
+            return file.getName().replaceFirst(".slr$", "");
+    }
     
 }

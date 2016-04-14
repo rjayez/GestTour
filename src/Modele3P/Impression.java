@@ -1,5 +1,6 @@
 package Modele3P;
 
+import Utils.GestTourUtils;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -22,7 +23,7 @@ import org.eclipse.swt.widgets.TableItem;
 public class Impression
 {
 
-    private Configuration config;
+    private final Configuration config;
     private static Impression instance;
 
     public static Impression getInstance()
@@ -40,43 +41,63 @@ public class Impression
         config = Configuration.getInstance();
     }
     //TODO Ajouter le nom du fichier de tournoi dans le nom du pdf crée
-    public void createPdfFeuilleMarque(String nomFichier, ArrayList<String[]> listRenc, ArrayList<Epreuve> epreuves)
+    public void createPdfFeuilleMarque(int numeroTour, ArrayList<String[]> listRenc, ArrayList<Epreuve> epreuves)
     {
         //TODO Gerer l'affichage selon le nombre d'epreuve
         Document doc = new Document(PageSize.A4.rotate(), 1, 1, 15, 15);
         try
         {
-
-            PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(nomFichier));
+            
+            String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
+            final String nomFichierPdf = "Feuille Rencontre Tour " + numeroTour + " - " + complementTitrePdf + ".pdf";
+ 
+            PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPdf));
 
             doc.open();
 
             ColumnText column = new ColumnText(writer.getDirectContentUnder());
 
             int count = 0;
-            for (String[] renc : listRenc)
+                        
+            for(int i = 0; i < listRenc.size(); i++)
             {
-
+                String[] renc = listRenc.get(i);
                 column.addElement(createTableFeuilleMarque(renc, epreuves));
                 count++;
-                if (count == 2)
+                
+                if (count == 2) // Défini la colonne de gauche et écrit les feuilles de marque dans le document
                 {
                     column.setSimpleColumn(doc.left(), doc.bottom(), (doc.left() + doc.right()) / 2, doc.top());
                     column.go();
                 }
-                else if (count == 4)
+                else if (count == 4) // Défini la colonne de droite, écrit les feuilles de marque et passe à la page suivante
                 {
                     column.setSimpleColumn((doc.left() + doc.right()) / 2, doc.bottom(), doc.right(), doc.top());
                     column.go();
                     doc.newPage();
                     count = 0;
                 }
+                else if (listRenc.size() - 1 == i) // Dans le cas d'un nombre impair de feuille de rencontre, écrit la feuille de marque
+                {
+                    if(count > 2)
+                    {
+                        column.setSimpleColumn((doc.left() + doc.right()) / 2, doc.bottom(), doc.right(), doc.top());
+                    }
+                    else
+                    {
+                        column.setSimpleColumn(doc.left(), doc.bottom(), (doc.left() + doc.right()) / 2, doc.top());   
+                    }
+                    
+                    column.go();
+                }
+                
             }
-            // column.go();
+           
+           
 
             doc.close();
 
-            openAdobeViewer(nomFichier);
+            openAdobeViewer(nomFichierPdf);
         }
         catch (FileNotFoundException e)
         {
@@ -146,12 +167,10 @@ public class Impression
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try
         {
-            String cheminFichier = config.getSaveFile();
-            /*
-             * StringTokenizer str = new String[] temp = cheminFichier.split("[\\]"); String nomFichier = temp[temp.length - 1].split(".")[0];
-             */
-
-            PdfWriter.getInstance(doc, new FileOutputStream("pdf_Rencontre_Tour_" + numTour + ".pdf"));
+            String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
+            final String nomFichierPdf = "Rencontre Tour " + numTour + " - " + complementTitrePdf + ".pdf";
+            
+            PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPdf));
 
             doc.open();
             doc.addTitle("Tour n°" + numTour);
@@ -159,7 +178,7 @@ public class Impression
 
             doc.close();
 
-            openAdobeViewer("pdf_Rencontre_Tour_" + numTour + ".pdf");
+            openAdobeViewer(nomFichierPdf);
 
         }
         catch (FileNotFoundException e)
@@ -244,18 +263,16 @@ public class Impression
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try
         {
-            /*
-             * String cheminFichier = config.getSaveFile(); String[] temp = cheminFichier.split("\\"); String nomFichier = temp[temp.length - 1].split(".")[0];
-             */
-
-            PdfWriter.getInstance(doc, new FileOutputStream("pdf_Classement_final.pdf"));
+            String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
+            final String nomFichierPDF = "Classement Final - " + complementTitrePdf +".pdf";
+            PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPDF));
 
             doc.open();
             doc.addTitle("Classement");
             doc.add(createTableClassement(table, isCategorie));
 
             doc.close();
-            openAdobeViewer("pdf_Classement_final.pdf");
+            openAdobeViewer(nomFichierPDF);
 
         }
         catch (FileNotFoundException e)
@@ -327,28 +344,24 @@ public class Impression
         pdfTable.addCell(cell);
 
         font.setSize(12);
-        for (int i = 0; i < items.length; i++)
+        for (TableItem item : items)
         {
             for (int j = 0; j < 8; j++)
             {
                 if (j != 1)
                 {
-                    cell = new PdfPCell(new Phrase(items[i].getText(j), font));
-
+                    cell = new PdfPCell(new Phrase(item.getText(j), font));
                     pdfTable.addCell(cell);
                 }
                 else
                 {
                     if (isCategorie)
                     {
-                        cell = new PdfPCell(new Phrase(items[i].getText(j), font));
-
+                        cell = new PdfPCell(new Phrase(item.getText(j), font));
                         pdfTable.addCell(cell);
                     }
                 }
-
             }
-
         }
 
         return pdfTable;
@@ -359,18 +372,16 @@ public class Impression
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try
         {
-            /*
-             * String cheminFichier = config.getSaveFile(); String[] temp = cheminFichier.split("\\"); String nomFichier = temp[temp.length - 1].split(".")[0];
-             */
-
-            PdfWriter.getInstance(doc, new FileOutputStream("pdf_Score_Tour"+ (indexTour+1) +".pdf"));
+            String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
+            final String nomFichierPDF = "Score Tour "+ (indexTour+1) +" - " + complementTitrePdf + ".pdf";
+            PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPDF));
             
             doc.open();
             doc.addTitle("ScoreTour");
             doc.add(createTableScoreTour(table, listRenc));
             System.out.println(config.getSaveFile());
             doc.close();
-            openAdobeViewer("pdf_Score_Tour"+ (indexTour+1) +".pdf");
+            openAdobeViewer(nomFichierPDF);
 
         }
         catch (FileNotFoundException | DocumentException e)

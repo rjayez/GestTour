@@ -237,6 +237,23 @@ public class Equipe
         }
     }
 
+    public static boolean aScoreSaisie (ArrayList<Equipe> listEquipes)
+    {
+        for (Equipe equipe : listEquipes)
+            {
+               for(int[] scoreTour : equipe.getScores())
+               {
+                   for(int scoreEpreuve : scoreTour)
+                   {
+                       if(scoreEpreuve != 0)
+                           return true;
+                   }
+               }
+            }
+        
+        return false;
+    }
+    
     public static boolean tourFini(ArrayList<Equipe> equipes, int nbEpreuve, int indexTour)
     {
         if (!equipes.isEmpty())

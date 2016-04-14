@@ -132,20 +132,22 @@ public class InscriptionIHM extends Dialog
             gData.horizontalSpan = 2;
             labelJoueur2.setLayoutData(gData);
         }
+        
+        Label labPrenom = new Label(fenetre, SWT.CENTER);
+        labPrenom.setText("Prenom :");
+        gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
+        labPrenom.setLayoutData(gData);
+
+        ajouterTextBox(fenetre, joueurs, catJoueur.prenom, 0);
 
         Label labNom = new Label(fenetre, SWT.CENTER);
         labNom.setText("Nom :");
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labNom.setLayoutData(gData);
 
-        ajouterTextBox(fenetre, joueurs, catJoueur.nom, 0);
+        ajouterTextBox(fenetre, joueurs, catJoueur.nom, 1);
 
-        Label labPrenom = new Label(fenetre, SWT.CENTER);
-        labPrenom.setText("Prenom :");
-        gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
-        labPrenom.setLayoutData(gData);
-
-        ajouterTextBox(fenetre, joueurs, catJoueur.prenom, 1);
+       
 
         Label labVille = new Label(fenetre, SWT.CENTER);
         labVille.setText("Ville :");
@@ -235,7 +237,7 @@ public class InscriptionIHM extends Dialog
         listTab[indexTab++] = checkJeune;
 
         checkJeune.setSize(10, 10);
-        gData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1);
+        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1);
         checkJeune.setLayoutData(gData);
         checkJeune.addSelectionListener(new SelectionListener()
         {
@@ -254,22 +256,27 @@ public class InscriptionIHM extends Dialog
 
         // Partie radio présence
         GridLayout gridLayoutDataPresence = new GridLayout(5, false);
-        
+        gridLayoutDataPresence.horizontalSpacing = 20;
+        gridLayoutDataPresence.verticalSpacing = 10;
+        gridLayoutDataPresence.marginRight = 20;
         Composite compositePresence = new Composite(fenetre, 0);
         compositePresence.setLayout(gridLayoutDataPresence);
         
-        gData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 5, 1);
+        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 5, 1);
         compositePresence.setLayoutData(gData);
         
         Label labelPresence = new Label(compositePresence, 0);
         labelPresence.setText("Présent :");
-        gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+        gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labelPresence.setLayoutData(gData);
         
-      
+        Label labelPresenceOui = new Label(compositePresence,0);
+        labelPresenceOui.setText("Oui");
+        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        labelPresenceOui.setLayoutData(gData);
+        
         Button checkPresenceOui = new Button(compositePresence, SWT.RADIO);
-        checkPresenceOui.setSize(10, 10);
-        gData = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
+        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
         checkPresenceOui.setLayoutData(gData);
         checkPresenceOui.addSelectionListener(new SelectionListener()
         {
@@ -287,15 +294,15 @@ public class InscriptionIHM extends Dialog
             }
         });
         
-        Label labelPresenceOui = new Label(compositePresence,0);
-        labelPresenceOui.setText("Oui");
-        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        labelPresenceOui.setLayoutData(gData);
-        
+       
+        Label labelPresenceNon = new Label(compositePresence,0);
+        labelPresenceNon.setText("Non");
+        gData = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+        labelPresenceNon.setLayoutData(gData);
     
         
         Button checkPresenceNon = new Button(compositePresence, SWT.RADIO);
-        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gData = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
         checkPresenceNon.setSize(10, 10);
         checkPresenceNon.setLayoutData(gData);
         checkPresenceNon.addSelectionListener(new SelectionListener()
@@ -314,10 +321,7 @@ public class InscriptionIHM extends Dialog
             }
         });
         
-        Label labelPresenceNon = new Label(compositePresence,0);
-        labelPresenceNon.setText("Non");
-        gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-        labelPresenceNon.setLayoutData(gData);
+      
         
         if(result.isPresent())
             checkPresenceOui.setSelection(true);
