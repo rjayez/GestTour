@@ -59,16 +59,7 @@ public class EquipeTest
         fail("The test case is a prototype.");
     }
 
-    @Test
-    public void testClasserEquipeScorePondere()
-    {
-        System.out.println("classerEquipeScorePondere");
-        Epreuve[] epreuves = null;
-        ArrayList<Equipe> listEquipe = null;
-        Equipe.classerEquipeScorePondere(epreuves, listEquipe);
-        fail("The test case is a prototype.");
-    }
-
+   
     @Test
     public void testTourFini()
     {

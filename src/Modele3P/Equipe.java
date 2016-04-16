@@ -1,8 +1,10 @@
 package Modele3P;
 
+import Utils.comparator.ComparatorEquipeScorePondere;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class Equipe
 {
@@ -96,9 +98,9 @@ public class Equipe
         Collections.sort(listEq, new ComparateurEquipeNum());
     }
 
-    public static void classerEquipeScorePondere(Epreuve[] epreuves, ArrayList<Equipe> listEquipe)
+    public static void classerEquipeScorePondere(List<Epreuve> listEpreuves, List<Equipe> listEquipe, int indexTour)
     {
-        
+       Collections.sort(listEquipe, new ComparatorEquipeScorePondere(indexTour, listEpreuves));
     }
         
     
@@ -207,9 +209,7 @@ public class Equipe
         public int compare(Equipe e1, Equipe e2)
         {
             if (e1.getPartiesGagnees()[indexTour] > e2.getPartiesGagnees()[indexTour]) // comparaison
-            // nombre
-            // épreuve
-            // gagnée
+            // nombre épreuve gagnée
             {
                 return -1; // retour négatif pour avoir un classement croissant
             }
@@ -385,7 +385,7 @@ public class Equipe
      * @param indexTour index du dernier tour souhaité por faire le calcul du scores (index 0 => premier tour)
      * @return 
      */
-     public Integer getScoreTotalTourPondere(final ArrayList<Epreuve> epreuves, final int indexTour)
+     public Integer getScoreTotalTourPondere(final List<Epreuve> epreuves, final int indexTour)
     {
         int ppcmEpreuve = Epreuve.getPpcmEpreuve(epreuves);
         

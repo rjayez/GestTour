@@ -12,6 +12,8 @@ import Modele3P.Equipe;
 import Modele3P.Impression;
 import Modele3P.Joueur;
 import Modele3P.Sauvegarde;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -52,7 +54,6 @@ import org.eclipse.swt.widgets.TableItem;
 public class IHM3P
 {
 
-    //TODO adapter nom de fichier pdf selon le tour et l'origine
     //TODO Ajouter des titres sur les PDFs
     //TODO Faire classement de tour, cumulé (ajout des tours précédent) et seul
     private final boolean[] islockedScore;
@@ -94,7 +95,7 @@ public class IHM3P
         this.uneFeuilleMarqueParEquipe = true;
         display = new Display();
         fenetre = new Shell(display, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-        fenetre.setText("Gestion 3P");
+        fenetre.setText("GestTour");
         fenetre.setMaximized(true);
         tablesScore = new ArrayList<>();
         tablesRenc = new ArrayList<>();
@@ -122,10 +123,13 @@ public class IHM3P
             @Override
             public void run()
             {
+                
                 save.enregistrer(config.getSaveFile(), equipes, epreuves);
+                save.enregistrer("E:\\Mes documents\\Temporaire\\Sauvegarde - " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-YY HH-mm")) + ".slr", equipes, epreuves);
+                
                 estDonneesAJour = true;
             }
-        }, 2000, 300000);
+        }, 2000, 300000);// Démarre au bout de 2 secondes et enregistre toutes les 5 minutes (300 secondes)
 
         createContents();
 
@@ -172,7 +176,7 @@ public class IHM3P
     private void initAffichage(final Table tableInsc, final ArrayList<Table> tablesRenc, final ArrayList<Table> tablesScore, final ArrayList<Table> listTablesClass)
     {
 
-        fenetre.setText("TourManage - " + config.getSaveFile());
+        fenetre.setText("GestTour - " + config.getSaveFile());
 
         affichageEquipeInsc(tableInsc);
 
@@ -351,7 +355,8 @@ public class IHM3P
             TableItem ti = new TableItem(table, 0);
             ti.setText(strInfo);
         }
-        Equipe.classerEquipe(equipes);
+        //Equipe.classerEquipe(equipes);
+        Equipe.classerEquipeScorePondere(epreuves, equipes, config.getNbTour() - 1);
 
     }
 
@@ -383,7 +388,8 @@ public class IHM3P
     private void afficherClassement(int indexTour, Table table)
     {
 
-        Equipe.classerEquipeIndexTour(equipes, indexTour);
+        //Equipe.classerEquipeIndexTour(equipes, indexTour);
+        Equipe.classerEquipeScorePondere(epreuves, equipes, indexTour);
         table.removeAll();
         String[] strInfo;
 
@@ -414,7 +420,8 @@ public class IHM3P
     private void afficherClassemmentFinal(Table table)
     {
         table.removeAll();
-        Equipe.classerEquipe(equipes);
+        // Equipe.classerEquipe(equipes);
+        Equipe.classerEquipeScorePondere(epreuves, equipes, config.getNbTour()-1);
         table.getColumn(1).setWidth(0);
         String[] strInfo = new String[8];
         int i = 1;
@@ -434,7 +441,7 @@ public class IHM3P
             System.out.println(eq.getScoreTotalPondere(epreuves));
             float pourcentageScore = (eq.getScoreTotalPondere(epreuves) / diviseur) * 100;
             strInfo[6] = String.format("%,.1f", pourcentageScore);
-            strInfo[7] = eq.getCategorie().toString();
+            strInfo[INDEX_COLONNE_CATEGORIE] = eq.getCategorie().toString();
             // strInfo[7] = eq.getCommentaire;
 
             TableItem ti = new TableItem(table, SWT.NONE);
@@ -442,6 +449,7 @@ public class IHM3P
             i++;
         }
     }
+    private static final int INDEX_COLONNE_CATEGORIE = 7;
 
     private void selectionCategorie(Table table, Categorie cat)
     {
@@ -451,11 +459,11 @@ public class IHM3P
 
         if (cat != Categorie.Tous)
         {
-
+            // TODO essayer de ne plus vérifier avec la valeur dans le tableau (bug parce qu'une nouvelle colonne a été rajouté
             ArrayList<Integer> index = new ArrayList<>(items.length);
             for (int i = 0; i < items.length; i++)
             {
-                if (!cat.toString().equals(items[i].getText(6)))
+                if (!cat.toString().equals(items[i].getText(INDEX_COLONNE_CATEGORIE)))
                 {
                     index.add(i);
                 }
@@ -574,7 +582,8 @@ public class IHM3P
             int nbErreur = 0;
             // Fait la rencontre des équipe deux à deux en suivant la liste des
             // scores total
-            Equipe.classerEquipeIndexTour(equipes, indexTour - 1);
+            //Equipe.classerEquipeIndexTour(equipes, indexTour - 1);
+            Equipe.classerEquipeScorePondere(epreuves, equipes, indexTour - 1);
 
             /*
              * Algorithme 1) Test si l'équipe n'a pas d'aversaire pour se tour 2) Récupére la deuxiéme équipe à la suite tant qu'elle a une équipe adverse 3) Test si l'équipe n'a pas deja
@@ -585,6 +594,7 @@ public class IHM3P
             {
                 if (erreurRencontre)
                 {
+                    // TODO Plantage ici avec 6 équipes et 4 tour (revoir la validation du nombre d'équipe en fonction du nombre de tour)
                     Collections.shuffle(equipes.subList(eqSize - (3 + nbErreur), eqSize));
                     erreurRencontre = false;
                     if (nbErreur < eqSize - 1)
@@ -766,7 +776,7 @@ public class IHM3P
                 if (equipe != null)
                 {
                     ajoutNouvelleEquipe(equipe, tableInsc);
-
+                    affichageEquipeInsc(tableInsc);
                 }
             }
         }
@@ -864,7 +874,8 @@ public class IHM3P
                     }
                     if (onglet.getSelectionIndex() == 1 + config.getNbTour())//onglet classement
                     {
-                        Equipe.classerEquipe(equipes);
+                        //Equipe.classerEquipe(equipes);
+                        Equipe.classerEquipeScorePondere(epreuves, equipes, config.getNbTour() - 1);
                         for (int i = 0; i < config.getNbTour(); i++)
                         {
                             if (i != config.getNbTour() - 1)
@@ -1630,7 +1641,7 @@ public class IHM3P
             {
                 "N° Terrain", "100"
             });
-
+            
             final Table tableRenc = creerTable(compRencTour, columsRencontre);
             tablesRenc.add(tableRenc);
 
@@ -1877,10 +1888,8 @@ public class IHM3P
                             }
                             else
                             {
-                                MessageBox msgBox = new MessageBox(fenetre, SWT.OK);
-                                msgBox.setText(TexteIHM.Titre.ERREUR);
-                                msgBox.setMessage("L'équipe n'a pas d'adversaire pour ce tour");
-                                msgBox.open();
+                                ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, "L'équipe n'a pas d'adversaire pour ce tour.", fenetre, SWT.OK);
+                                
                             }
 
                         }
@@ -1895,7 +1904,7 @@ public class IHM3P
                         }
                         else
                         {
-                            msgBox.setMessage("Le tour précédent n'est pas fini. Assurez-vous que le tour est verrouillé");
+                            msgBox.setMessage("Le tour précédent n'est pas fini. Assurez-vous qu'il est verrouillé.");
                         }
                         msgBox.open();
                     }
@@ -2180,6 +2189,7 @@ public class IHM3P
 
     private Equipe getEquipe(int numero)
     {
+        
         for (Equipe eq : equipes)
         {
             if (eq.getNumero() == numero)

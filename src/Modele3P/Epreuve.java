@@ -2,6 +2,7 @@ package Modele3P;
 
 import Utils.GestTourUtils;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epreuve
 {
@@ -85,7 +86,7 @@ public class Epreuve
      * @param epreuves tableau des épreuves
      * @return renvoie le ppcm
      */
-    public static int getPpcmEpreuve(final ArrayList<Epreuve> epreuves)
+    public static int getPpcmEpreuve(final List<Epreuve> epreuves)
     {
         ArrayList<Integer> scoreMaxEpreuve = new ArrayList<>();
         for(Epreuve epreuve : epreuves)
