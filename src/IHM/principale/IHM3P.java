@@ -54,10 +54,6 @@ import org.eclipse.swt.widgets.TableItem;
 public class IHM3P
 {
 
-    //TODO Ajouter des titres sur les PDFs
-    //TODO Faire classement de tour, cumulé (ajout des tours précédent) et seul
-    private final boolean[] islockedScore;
-
     private final ArrayList<Equipe> equipes;
     private final Sauvegarde save;
     private final Impression pdf;
@@ -102,7 +98,7 @@ public class IHM3P
         listTablesClass = new ArrayList<>();
         onglet = new TabFolder(fenetre, 0);
 
-        islockedScore = new boolean[config.getNbTour()];
+        boolean[] islockedScore = new boolean[config.getNbTour()];
         for (int i = 0; i < islockedScore.length; i++)
         {
             islockedScore[i] = false;
@@ -360,25 +356,7 @@ public class IHM3P
 
     }
 
-//    private void classementTour(int indexTour, Table table)
-//    {
-//        Equipe.classerEquipeTourUnique(equipes, indexTour);
-//        table.removeAll();
-//        String[] strInfo;
-//        int i = 1;
-//        for (Equipe eq : equipes)
-//        {
-//            strInfo = new String[7];
-//            strInfo[0] = Integer.toString(i);
-//            strInfo[2] = eq.getNumeroStr();
-//            strInfo[3] = eq.getNomsJoueur();
-//            strInfo[4] = Integer.toString(eq.getPartiesGagnees()[indexTour]);
-//            strInfo[5] = Integer.toString(eq.getScoreTour(indexTour));
-//            i++;
-//            TableItem ti = new TableItem(table, 0);
-//            ti.setText(strInfo);
-//        }
-//    }
+
     /**
      * Rempli le tableau de classement des équipes de chaque tour hors le dernier qui posséde un affichage différent
      *
@@ -392,7 +370,7 @@ public class IHM3P
         Equipe.classerEquipeScorePondere(epreuves, equipes, indexTour);
         table.removeAll();
         String[] strInfo;
-
+        float diviseur = Epreuve.getPpcmEpreuve(epreuves) * (indexTour + 1) * epreuves.size();
         for (Equipe eq : equipes)
         {
             strInfo = new String[5];
@@ -405,7 +383,8 @@ public class IHM3P
             // Colonne 4 : Scores total
             strInfo[3] = Integer.toString(eq.getScoreTotalTour(indexTour));
             // Colonne 5 : Scores total pondéré
-            strInfo[4] = eq.getScoreTotalTourPondere(epreuves, indexTour).toString();
+            float pourcentageScore = (eq.getScoreTotalTourPondere(epreuves, indexTour) / diviseur) * 100;
+            strInfo[4] = String.format("%,.1f", pourcentageScore);
 
             TableItem ti = new TableItem(table, 0);
             ti.setText(strInfo);
@@ -437,8 +416,7 @@ public class IHM3P
             strInfo[3] = eq.getNomsJoueur();
             strInfo[4] = Integer.toString(eq.getPartiesGagneesTot());
             strInfo[5] = Integer.toString(eq.getScoreTotal());
-            System.out.println(eq.getScoreTotalPondere(epreuves));
-            System.out.println(eq.getScoreTotalPondere(epreuves));
+        
             float pourcentageScore = (eq.getScoreTotalPondere(epreuves) / diviseur) * 100;
             strInfo[6] = String.format("%,.1f", pourcentageScore);
             strInfo[INDEX_COLONNE_CATEGORIE] = eq.getCategorie().toString();
@@ -528,9 +506,8 @@ public class IHM3P
      * Classe les equipes pour procéder au rencontre du tour et l'affichage dans le tableau indiqué, établit la rencontre de la premiere et derniere équipe lors du
      * premier tour, puis établit les rencontres 2 a 2 pour les autres tours AMELIORABLE algorithimiquement
      *
-     * @param listeEquipe liste des équipes d'inscription si c'est le premier tour, ou la liste des équipes aprés le classement du tour precedent
      * @param table tableau dans lequel sera affiché les rencontres pour le tour
-     * @param premierTour définit si c'est des rencontres pour un premier tour ou pour un n-iéme tour
+     * @param indexTour définit si c'est des rencontres pour un premier tour ou pour un n-iéme tour
      */
     private void affichageRencontreEquipe(Table table, int indexTour)
     {
@@ -1254,21 +1231,24 @@ public class IHM3P
 
         for (TableItem item : tableRencontre.getItems())
         {
-            String[] strFeuille = new String[4];
+            String[] strFeuille = new String[5];
             strFeuille[0] = Integer.toString(indexTour + 1);
-            strFeuille[1] = item.getText(0);// numéro d'équipe de gauche
+            strFeuille[1] = item.getText(0); // numéro d'équipe de gauche
             strFeuille[2] = item.getText(3); // numéro d'équipe de droite
-            strFeuille[3] = item.getText(6); // 
+            strFeuille[3] = item.getText(6); // numéro terrain
+            strFeuille[4] = item.getText(5); // epreuve
             listRenc.add(strFeuille);
 
             //inversement pour l'autre équipe, si l'on veut une feuille par équipe
             if (uneFeuilleParEquipe)
             {
-                strFeuille = new String[4];
+                strFeuille = new String[5];
                 strFeuille[0] = Integer.toString(indexTour + 1);
                 strFeuille[2] = item.getText(0);// numéro d'équipe de gauche
                 strFeuille[1] = item.getText(3); // numéro d'équipe de droite
-                strFeuille[3] = item.getText(6); // 
+                strFeuille[3] = item.getText(6); // numéro terrain epreuve
+                strFeuille[4] = item.getText(5); // epreuve
+
                 listRenc.add(strFeuille);
             }
         }
@@ -1705,21 +1685,15 @@ public class IHM3P
 
                 }
             });
-            radioUneFeuilleParEquipe.addPaintListener(new PaintListener()
-            {
-
-                @Override
-                public void paintControl(PaintEvent pe)
+            radioUneFeuilleParEquipe.addPaintListener(pe -> {
+                Button thisButton = (Button) pe.getSource();
+                if (uneFeuilleMarqueParEquipe)
                 {
-                    Button thisButton = (Button) pe.getSource();
-                    if (uneFeuilleMarqueParEquipe)
-                    {
-                        thisButton.setSelection(true);
-                    }
-                    else
-                    {
-                        thisButton.setSelection(false);
-                    }
+                    thisButton.setSelection(true);
+                }
+                else
+                {
+                    thisButton.setSelection(false);
                 }
             });
 
@@ -1747,21 +1721,15 @@ public class IHM3P
 
                 }
             });
-            radioUneFeuilleParRencontre.addPaintListener(new PaintListener()
-            {
-
-                @Override
-                public void paintControl(PaintEvent pe)
+            radioUneFeuilleParRencontre.addPaintListener(pe -> {
+                Button thisButton = (Button) pe.getSource();
+                if (!uneFeuilleMarqueParEquipe)
                 {
-                    Button thisButton = (Button) pe.getSource();
-                    if (!uneFeuilleMarqueParEquipe)
-                    {
-                        thisButton.setSelection(true);
-                    }
-                    else
-                    {
-                        thisButton.setSelection(false);
-                    }
+                    thisButton.setSelection(true);
+                }
+                else
+                {
+                    thisButton.setSelection(false);
                 }
             });
 

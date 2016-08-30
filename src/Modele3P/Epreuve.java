@@ -54,7 +54,7 @@ public class Epreuve
 			Reste = Nb1 % Nb2;
 		}
 		PPCM = Produit / Nb2;
-		// System.out.println("PGCD = " + Nb2 + " PPCM = " + PPCM);
+
 		return PPCM;
 	}
 	

@@ -17,7 +17,7 @@ public class Equipe
     private int[] equipesJouees;
     private boolean present;
 
-    private static int indexTour;
+    //private static int indexTour;
 
     public Equipe(int numero, Joueur[] joueurs, Categorie categorie, int[][] scores, int[] partiesGagnees, int[] equipesJouees, boolean present)
     {
@@ -69,28 +69,6 @@ public class Equipe
     public Equipe(Configuration config)
     {
         this(0, Categorie.Homme, config);
-    }
-
-    /**
-     * Classement général des équipes
-     *
-     * @param listEq
-     */
-    public static void classerEquipe(ArrayList<Equipe> listEq)
-    {
-        Collections.sort(listEq, new ComparateurScore());
-    }
-
-    public static void classerEquipeTourUnique(ArrayList<Equipe> listEq, int indexTour)
-    {
-        Equipe.indexTour = indexTour;
-        Collections.sort(listEq, new ComparateurScoreTourUnique());
-    }
-
-    public static void classerEquipeIndexTour(ArrayList<Equipe> listEq, int indexTour)
-    {
-        Equipe.indexTour = indexTour;
-        Collections.sort(listEq, new ComparateurScoreIndexTour());
     }
 
     public static void ordonnerEquipe(ArrayList<Equipe> listEq)
@@ -159,83 +137,9 @@ public class Equipe
         }
     }
 
-    /**
-     * Compare pour un nombre donner de tour
-     *
-     */
-    public static class ComparateurScoreIndexTour implements Comparator<Equipe>
-    {
 
-        @Override
-        public int compare(Equipe e1, Equipe e2)
-        {
-            if (e1.getPartiesGagneesTotalPartiel(indexTour) > e2.getPartiesGagneesTotalPartiel(indexTour)) // comparaison nombre épreuve gagnée
-            {
-                return -1; // retour négatif pour avoir un classement croissant
-            }
-            else if (e1.getPartiesGagneesTotalPartiel(indexTour) < e2.getPartiesGagneesTotalPartiel(indexTour))
-            {
-                return 1;
-            }
-            else
-            {
-                if (e1.getScoreTotalTour(indexTour) > e2.getScoreTotalTour(indexTour)) // classement par score
-                {
-                    return -1;
-                }
-                else if (e1.getScoreTotalTour(indexTour) < e2.getScoreTotalTour(indexTour))
-                {
-                    return 1;
-                }
-                else
-                {
-                    ComparateurEquipeNum cen = new ComparateurEquipeNum();
-                    return cen.compare(e1, e2);
-                }
-            }
 
-        }
 
-    }
-
-    /**
-     * Compare sur un tour unique indiqué
-     *
-     */
-    public static class ComparateurScoreTourUnique implements Comparator<Equipe>
-    {
-
-        @Override
-        public int compare(Equipe e1, Equipe e2)
-        {
-            if (e1.getPartiesGagnees()[indexTour] > e2.getPartiesGagnees()[indexTour]) // comparaison
-            // nombre épreuve gagnée
-            {
-                return -1; // retour négatif pour avoir un classement croissant
-            }
-            else if (e1.getPartiesGagnees()[indexTour] < e2.getPartiesGagnees()[indexTour])
-            {
-                return 1;
-            }
-            else
-            {
-                if (e1.getScoreTour(indexTour) > e2.getScoreTour(indexTour)) // classement par
-                // score
-                {
-                    return -1;
-                }
-                else if (e1.getScoreTour(indexTour) < e2.getScoreTour(indexTour))
-                {
-                    return 1;
-                }
-                else
-                {
-                    return new ComparateurEquipeNum().compare(e1, e2);
-                }
-            }
-
-        }
-    }
 
     public static boolean aScoreSaisie (ArrayList<Equipe> listEquipes)
     {
@@ -304,7 +208,7 @@ public class Equipe
     // Accesseurs
     public String getNomsJoueur()
     {
-        String nomJoueur = new String();
+        String nomJoueur = "";
 
         for (Joueur joueur : joueurs)
         {
