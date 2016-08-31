@@ -6,8 +6,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 
-public class Configuration
-{
+public class Configuration {
 
     private static Configuration instance;
     private int nbEpreuve;
@@ -19,18 +18,15 @@ public class Configuration
     private boolean isLockedInsc;
     private boolean[] tourFini;
 
-    public static Configuration getInstance()
-    {
-        if (instance == null)
-        {
+    public static Configuration getInstance() {
+        if (instance == null) {
             instance = new Configuration();
         }
 
         return instance;
     }
 
-    private Configuration(String saveFile, int nbEpreuve, int nbJoueurEquipe, int nbTour, String tarif, boolean isLocked, boolean[] tourFini)
-    {
+    private Configuration(String saveFile, int nbEpreuve, int nbJoueurEquipe, int nbTour, String tarif, boolean isLocked, boolean[] tourFini) {
         this.isLockedInsc = isLocked;
         this.tourFini = tourFini;
         this.nbEpreuve = nbEpreuve;
@@ -39,44 +35,33 @@ public class Configuration
         this.tarif = tarif;
         this.saveFile = saveFile;
         this.prevFile = new LinkedList<>();
-        try
-        {
+        try {
             getPreviousFile();
-        }
-        catch (SecurityException | BackingStoreException e)
-        {
+        } catch (SecurityException | BackingStoreException e) {
             e.printStackTrace();
         }
     }
 
-    private Configuration()
-    {
+    private Configuration() {
         this("defaut.xml", 3, 2, 3, "6.0", false, new boolean[3]);
     }
 
-    private void getPreviousFile() throws SecurityException, BackingStoreException
-    {
+    private void getPreviousFile() throws SecurityException, BackingStoreException {
         Preferences pref = Preferences.userRoot().node("gesttour");
 
         String val = pref.get("prevfile", "");
 
-        if (val.compareTo("") == 0)
-        {
+        if (val.isEmpty()) {
             pref.put("prevfile", " ; ; ; ;");
             pref.flush();
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < 4; i++) {
                 prevFile.add("");
             }
 
-        }
-        else
-        {
+        } else {
             String[] values = val.split(";");
-            if (values.length > 0)
-            {
-                for (int i = 0; i < 4; i++)
-                {
+            if (values.length > 0) {
+                for (int i = 0; i < 4; i++) {
                     prevFile.add(values[i].trim());
                 }
             }
@@ -88,28 +73,21 @@ public class Configuration
     /**
      * Réorganisation de la liste des fichiers récent avec le chemin du fichier
      * passé en paramétre
-     *
      */
-    public void fichierRecent(String fichier)
-    {
+    public void fichierRecent(String fichier) {
         boolean present = false;
         int i = 0;
-        for (String s : prevFile)
-        {
-            if (s.equals(fichier))
-            {
+        for (String s : prevFile) {
+            if (s.equals(fichier)) {
                 present = true;
                 break;
             }
             i++;
         }
 
-        if (present)
-        {
+        if (present) {
             Collections.swap(prevFile, 0, i);
-        }
-        else
-        {
+        } else {
             prevFile.addFirst(fichier);
             prevFile.removeLast();
         }
@@ -117,107 +95,87 @@ public class Configuration
         Preferences pref = Preferences.userRoot().node("gesttour");
 
         String save = "";
-        for (String s : prevFile)
-        {
+        for (String s : prevFile) {
             save += s + " ;";
         }
 
         pref.put("prevfile", save);
-        try
-        {
+        try {
             pref.flush();
-        }
-        catch (BackingStoreException e)
-        {
+        } catch (BackingStoreException e) {
 
             e.printStackTrace();
         }
     }
 
     // Accesseurs
-    public LinkedList<String> getPrevFile()
-    {
+    public LinkedList<String> getPrevFile() {
         return prevFile;
     }
 
-    public int getNbEpreuve()
-    {
+    public int getNbEpreuve() {
         return nbEpreuve;
     }
 
-    public void setNbEpreuve(int nbEpreuve)
-    {
+    public void setNbEpreuve(int nbEpreuve) {
         this.nbEpreuve = nbEpreuve;
     }
 
-    public int getNbJoueurEquipe()
-    {
+    public int getNbJoueurEquipe() {
         return nbJoueurEquipe;
     }
 
-    public void setNbJoueurEquipe(int nbJoueurEquipe)
-    {
+    public void setNbJoueurEquipe(int nbJoueurEquipe) {
         this.nbJoueurEquipe = nbJoueurEquipe;
     }
 
-    public int getNbTour()
-    {
+    public int getNbTour() {
         return nbTour;
     }
 
-    public void setNbTour(int nbTour)
-    {
+    public void setNbTour(int nbTour) {
         this.nbTour = nbTour;
     }
 
-    public String getTarif()
-    {
+    public String getTarif() {
         return tarif;
     }
 
-    public void setTarif(String tarif)
-    {
+    public void setTarif(String tarif) {
         this.tarif = tarif;
     }
 
-    public String getSaveFile()
-    {
+    public String getSaveFile() {
         return saveFile;
     }
 
-    public void setSaveFile(String saveFile)
-    {
+    public void setSaveFile(String saveFile) {
         this.saveFile = saveFile;
     }
 
-    public boolean isLockedInsc()
-    {
+    public boolean isLockedInsc() {
         return isLockedInsc;
     }
 
-    public void setLockedInsc(boolean isLockedInsc)
-    {
+    public void setLockedInsc(boolean isLockedInsc) {
         this.isLockedInsc = isLockedInsc;
     }
 
     /**
      * @return the tourFini
      */
-    public boolean[] getTourFini()
-    {
+    public boolean[] getTourFini() {
         return tourFini;
     }
 
     /**
      * @param tourFini the tourFini to set
      */
-    public void setTourFini(boolean[] tourFini)
-    {
+    public void setTourFini(boolean[] tourFini) {
         this.tourFini = tourFini;
     }
-    
-    public void setTourFini(boolean fini, int index)
-    {
+
+    public void setTourFini(boolean fini, int index) {
         this.tourFini[index] = fini;
     }
 

@@ -212,10 +212,13 @@ public class Equipe
 
         for (Joueur joueur : joueurs)
         {
-            nomJoueur += joueur.getPrenom() + " " + joueur.getNom() + " | ";
+            if(!"".equals(nomJoueur) && (!joueur.getPrenom().isEmpty() || !joueur.getNom().isEmpty())){
+                nomJoueur += " | ";
+            }
+            nomJoueur += joueur.getPrenom() + " " + joueur.getNom();
         }
 
-        return nomJoueur.substring(0, nomJoueur.length() - 3).trim();
+        return nomJoueur;
     }
 
     public Joueur[] getJoueurs()

@@ -299,10 +299,9 @@ public class Sauvegarde
 			}
 			
 			int[] partiesGagnees = equipe.getPartiesGagnees();
-			for (int i = 0; i < partiesGagnees.length; i++)
-			{
+			for (int partiesGagnee : partiesGagnees) {
 				Element elePartieGagnee = new Element("partieGagnee");
-				elePartieGagnee.setText(Integer.toString(partiesGagnees[i]));
+				elePartieGagnee.setText(Integer.toString(partiesGagnee));
 				eleEquipe.addContent(elePartieGagnee);
 			}
 			
@@ -316,12 +315,7 @@ public class Sauvegarde
 		try
 		{
 			sortie.output(doc, new FileOutputStream(fichier));
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}

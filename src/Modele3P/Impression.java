@@ -2,26 +2,34 @@ package Modele3P;
 
 import Utils.GestTourUtils;
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+
 public class Impression {
 
     private final Configuration config;
     private static Impression instance;
+
+    private HashMap<String, List<Epreuve>> mapEpreuveFeuilleMarque = null;
 
     public static Impression getInstance() {
         if (instance == null) {
@@ -84,7 +92,7 @@ public class Impression {
 
             doc.close();
 
-            openAdobeViewer(nomFichierPdf);
+            openPdfFile(nomFichierPdf);
         } catch (FileNotFoundException | DocumentException e) {
             e.printStackTrace();
         }
@@ -100,9 +108,9 @@ public class Impression {
      */
     private PdfPTable createTableFeuilleMarque(String[] strRenc, ArrayList<Epreuve> epreuves) throws DocumentException {
 
-        PdfPTable table = new PdfPTable(4);
+        PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(95);
-        table.setWidths(new float[]{5, 30, 30, 30});
+        //table.setWidths(new float[]{5, 30, 30, 30});
         table.setSpacingAfter(30);
         Font font = new Font(FontFamily.HELVETICA, 20);
 
@@ -127,7 +135,7 @@ public class Impression {
         cell.setFixedHeight(50);
 
         // ligne 1
-        table.addCell(cellSansBordure);
+//        table.addCell(cellSansBordure);
         cell.setPhrase(new Phrase("Tour n°\n" + strRenc[0], font));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Equipe n°\n" + strRenc[1], font));
@@ -135,18 +143,18 @@ public class Impression {
         cell.setPhrase(new Phrase("Equipe n°\n" + strRenc[2], font));
         table.addCell(cell);
 
+        initialiserListeEpreuveFeuilleMarque(epreuves);
+        List<Epreuve> listEpreuveFeuille = mapEpreuveFeuilleMarque.get(strRenc[4]);
 
-
-
-        for (Epreuve epreuve : epreuves) {
+        for (Epreuve epreuve : listEpreuveFeuille) {
 
             // Ajout d'une fleche devant la premiere epreuve du tour
-            if (strRenc[4].equals(epreuve.getNom())) {
-
-                table.addCell(cellFleche);
-            } else {
-                table.addCell(cellSansBordure);
-            }
+//            if (strRenc[4].equals(epreuve.getNom())) {
+//
+//                table.addCell(cellFleche);
+//            } else {
+//                table.addCell(cellSansBordure);
+//            }
             cell.setPhrase(new Phrase(epreuve.getNom() + "\nTerrain " + strRenc[3], font));
             table.addCell(cell);
             table.addCell(cellVide);
@@ -154,13 +162,26 @@ public class Impression {
         }
 
         // dernière ligne
-        table.addCell(cellSansBordure);
+//        table.addCell(cellSansBordure);
         cell.setPhrase(new Phrase("Total de\n Victoire", font));
         table.addCell(cell);
         table.addCell(cellVide);
         table.addCell(cellVide);
 
         return table;
+    }
+
+    void initialiserListeEpreuveFeuilleMarque(List<Epreuve> epreuves){
+        if(mapEpreuveFeuilleMarque == null){
+            mapEpreuveFeuilleMarque = new HashMap<>();
+            for(int i = 0; i < epreuves.size(); i++){
+                List<Epreuve> subList1 = epreuves.subList(i,epreuves.size());
+                List<Epreuve> subList2 = epreuves.subList(0, i);
+                List<Epreuve> listEpreuveFeuille = new ArrayList<>(subList1);
+                listEpreuveFeuille.addAll(subList2);
+                mapEpreuveFeuilleMarque.put(epreuves.get(i).getNom(), listEpreuveFeuille);
+            }
+        }
     }
 
     /**
@@ -183,7 +204,7 @@ public class Impression {
 
             doc.close();
 
-            openAdobeViewer(nomFichierPdf);
+            openPdfFile(nomFichierPdf);
 
         } catch (FileNotFoundException | DocumentException e) {
             e.printStackTrace();
@@ -261,12 +282,9 @@ public class Impression {
             doc.add(createTableClassement(table, isCategorie));
 
             doc.close();
-            openAdobeViewer(nomFichierPDF);
+            openPdfFile(nomFichierPDF);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
-
+        } catch (FileNotFoundException | DocumentException e) {
             e.printStackTrace();
         }
     }
@@ -344,10 +362,9 @@ public class Impression {
             doc.add(createTableScoreTour(table, listRenc));
             System.out.println(config.getSaveFile());
             doc.close();
-            openAdobeViewer(nomFichierPDF);
+            openPdfFile(nomFichierPDF);
 
         } catch (FileNotFoundException | DocumentException e) {
-
             e.printStackTrace();
         }
     }
@@ -401,12 +418,14 @@ public class Impression {
         return pdfTable;
     }
 
-    private void openAdobeViewer(String nomFichier) {
-        // TODO Trouver une manière plus propre d'ouvrir adobe reader
-        String[] cmd = {"C:\\Program Files (x86)\\Adobe\\Reader 11.0\\Reader\\AcroRd32.exe", System.getProperty("user.dir") + "\\" + nomFichier};
+    /**
+     * Ouvre le fichier PDF avec l'application par défaut
+     * @param nomFichier
+     */
+    private void openPdfFile(String nomFichier) {
 
         try {
-            Process p = Runtime.getRuntime().exec(cmd);
+            Desktop.getDesktop().open(new File(nomFichier));
         } catch (IOException e) {
             e.printStackTrace();
         }
