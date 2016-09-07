@@ -1,27 +1,17 @@
 package IHM.fenetre;
 
-import java.util.ArrayList;
+import Modele3P.Configuration;
+import Modele3P.Epreuve;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-import Modele3P.Configuration;
-import Modele3P.Epreuve;
+import org.eclipse.swt.widgets.*;
+
+import java.util.ArrayList;
 
 public class PreferenceIHM extends Dialog
 {
@@ -36,7 +26,7 @@ public class PreferenceIHM extends Dialog
 	{
 		super(parent, 0);
 		result = Configuration.getInstance();
-		epreuves = new ArrayList<Epreuve>();
+		epreuves = new ArrayList<>();
 	}
 	
 	public boolean open(Configuration config, ArrayList<Epreuve> epreuves)
@@ -101,14 +91,7 @@ public class PreferenceIHM extends Dialog
 		gData.widthHint = 75;
 		tb.setLayoutData(gData);
 		
-		tb.addModifyListener(new ModifyListener()
-		{
-			
-			@Override public void modifyText(ModifyEvent arg0)
-			{
-				result.setTarif(tb.getText());
-			}
-		});
+		tb.addModifyListener(arg0 -> result.setTarif(tb.getText()));
 		
 		lab = new Label(fenetre, 0);
 		lab.setText("Nombres de joueurs par équipe");
@@ -258,14 +241,7 @@ public class PreferenceIHM extends Dialog
 		// gData.widthHint = 250;
 		tbNomEpr.setLayoutData(gData);
 		tbNomEpr.setText(epr.getNom());
-		tbNomEpr.addModifyListener(new ModifyListener()
-		{
-			
-			@Override public void modifyText(ModifyEvent arg0)
-			{
-				epr.setNom(tbNomEpr.getText());
-			}
-		});
+		tbNomEpr.addModifyListener(arg0 -> epr.setNom(tbNomEpr.getText()));
 		
 		final Text tbPointEpr = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
 		gData = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -346,4 +322,4 @@ public class PreferenceIHM extends Dialog
 			{}
 		});
 	}
-};
+}

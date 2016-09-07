@@ -3,5 +3,5 @@ build/*
 *.pdf
 *.slr
 /dist/
-.SLR
+*.SLR
 .zip

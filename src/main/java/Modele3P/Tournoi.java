@@ -1,6 +1,7 @@
 package Modele3P;
 
 import IHM.principale.IHM3P;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

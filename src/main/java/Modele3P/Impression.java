@@ -10,18 +10,19 @@ import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
+import java.util.List;
 
 
 public class Impression {
@@ -103,14 +104,13 @@ public class Impression {
      * Crée un PdfTable représentant une feuille de marque pour le pdf
      *
      * @param strRenc
-     * @param epreuves
-     * @return
+     * @param epreuves liste des epreuves
+     * @return renvoie une PdfPTable avec une feuille de marque de construite
      */
     private PdfPTable createTableFeuilleMarque(String[] strRenc, ArrayList<Epreuve> epreuves) throws DocumentException {
 
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(95);
-        //table.setWidths(new float[]{5, 30, 30, 30});
         table.setSpacingAfter(30);
         Font font = new Font(FontFamily.HELVETICA, 20);
 
@@ -135,7 +135,6 @@ public class Impression {
         cell.setFixedHeight(50);
 
         // ligne 1
-//        table.addCell(cellSansBordure);
         cell.setPhrase(new Phrase("Tour n°\n" + strRenc[0], font));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Equipe n°\n" + strRenc[1], font));
@@ -148,13 +147,7 @@ public class Impression {
 
         for (Epreuve epreuve : listEpreuveFeuille) {
 
-            // Ajout d'une fleche devant la premiere epreuve du tour
-//            if (strRenc[4].equals(epreuve.getNom())) {
-//
-//                table.addCell(cellFleche);
-//            } else {
-//                table.addCell(cellSansBordure);
-//            }
+
             cell.setPhrase(new Phrase(epreuve.getNom() + "\nTerrain " + strRenc[3], font));
             table.addCell(cell);
             table.addCell(cellVide);
@@ -162,7 +155,6 @@ public class Impression {
         }
 
         // dernière ligne
-//        table.addCell(cellSansBordure);
         cell.setPhrase(new Phrase("Total de\n Victoire", font));
         table.addCell(cell);
         table.addCell(cellVide);
@@ -171,7 +163,7 @@ public class Impression {
         return table;
     }
 
-    void initialiserListeEpreuveFeuilleMarque(List<Epreuve> epreuves){
+     void initialiserListeEpreuveFeuilleMarque(List<Epreuve> epreuves){
         if(mapEpreuveFeuilleMarque == null){
             mapEpreuveFeuilleMarque = new HashMap<>();
             for(int i = 0; i < epreuves.size(); i++){

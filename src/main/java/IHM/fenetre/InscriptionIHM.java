@@ -5,22 +5,11 @@ import Modele3P.Configuration;
 import Modele3P.Equipe;
 import Modele3P.Joueur;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 public class InscriptionIHM extends Dialog
 {
@@ -28,7 +17,7 @@ public class InscriptionIHM extends Dialog
     private enum catJoueur
     {
         nom, prenom, ville
-    };
+    }
 
     private Configuration config;
 
@@ -67,15 +56,9 @@ public class InscriptionIHM extends Dialog
 
         createContents(fenetre, equipe);
 
-        fenetre.addListener(SWT.Close, new Listener()
-        {
-
-            @Override
-            public void handleEvent(Event event)
-            {
-                if(!exitWithOk)
-                    result = null;
-            }
+        fenetre.addListener(SWT.Close, event -> {
+            if(!exitWithOk)
+                result = null;
         });
         
         
@@ -357,7 +340,8 @@ public class InscriptionIHM extends Dialog
 
         Button btAnnuler = new Button(fenetre, SWT.PUSH);
 
-        listTab[indexTab++] = btAnnuler;
+        listTab[indexTab] = btAnnuler;
+
 
         btAnnuler.setText("Annuler");
         btAnnuler.setSize(100, 10);
@@ -415,43 +399,32 @@ public class InscriptionIHM extends Dialog
             }
 
             //validation avec bouton Entrer
-            Listener keyListener = new Listener()
-            {
-
-                @Override
-                public void handleEvent(Event event)
+            Listener keyListener = event -> {
+                if (SWT.CR == event.keyCode || SWT.KEYPAD_CR == event.keyCode)
                 {
-                    if (SWT.CR == event.keyCode || SWT.KEYPAD_CR == event.keyCode)
-                    {
-                        result.setJoueurs(joueurs);
-                        exitWithOk = true;
-                        fenetre.close();
-                    }
+                    result.setJoueurs(joueurs);
+                    exitWithOk = true;
+                    fenetre.close();
                 }
             };
 
             tb.addListener(SWT.KeyUp, keyListener);
 
             final Joueur joueur = joueurs[i];
-            tb.addModifyListener(new ModifyListener()
-            {
-                @Override
-                public void modifyText(ModifyEvent arg0)
+            tb.addModifyListener(arg0 -> {
+                if (catJ == catJoueur.nom)
                 {
-                    if (catJ == catJoueur.nom)
-                    {
-                        joueur.setNom(((Text) arg0.widget).getText());
-                    }
-                    if (catJ == catJoueur.prenom)
-                    {
-                        joueur.setPrenom(((Text) arg0.widget).getText());
-                    }
-                    if (catJ == catJoueur.ville)
-                    {
-                        joueur.setVille(((Text) arg0.widget).getText());
-                    }
-
+                    joueur.setNom(((Text) arg0.widget).getText());
                 }
+                if (catJ == catJoueur.prenom)
+                {
+                    joueur.setPrenom(((Text) arg0.widget).getText());
+                }
+                if (catJ == catJoueur.ville)
+                {
+                    joueur.setVille(((Text) arg0.widget).getText());
+                }
+
             });
         }
     }

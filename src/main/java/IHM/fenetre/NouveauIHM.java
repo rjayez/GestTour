@@ -1,27 +1,21 @@
 package IHM.fenetre;
 
-import java.util.ArrayList;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import Modele3P.Configuration;
 import Modele3P.Epreuve;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.wb.swt.SWTResourceManager;
+
 import java.io.File;
+import java.util.ArrayList;
 
 public class NouveauIHM extends Dialog
 {
 	
-	protected Object result;
-	protected Shell shell;
+	private Object result;
+	private Shell shell;
 	private Text tbFichier;
 	
 	/**

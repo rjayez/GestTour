@@ -1,25 +1,14 @@
 package IHM.fenetre;
 
-import java.util.ArrayList;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import Modele3P.Epreuve;
 import Modele3P.Equipe;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
+
+import java.util.ArrayList;
 
 public class ScoreIHM extends Dialog
 {
@@ -206,29 +195,23 @@ public class ScoreIHM extends Dialog
             gData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
             gData.widthHint = 40;
             tbScoreEq1.setLayoutData(gData);
-            tbScoreEq1.addListener(SWT.KeyUp, new Listener()
-            {
-
-                @Override
-                public void handleEvent(Event event)
+            tbScoreEq1.addListener(SWT.KeyUp, event -> {
+                if (SWT.CR == event.keyCode || SWT.KEYPAD_CR == event.keyCode)
                 {
-                    if (SWT.CR == event.keyCode || SWT.KEYPAD_CR == event.keyCode)
+                    compterPartieGagne(indexTour, eq1, eq2);
+                    if ((eq1.getPartiesGagnees()[indexTour] + eq2.getPartiesGagnees()[indexTour]) == epreuves.size() || (estScoreNul(indexTour, eq1) && estScoreNul(indexTour, eq2)))
                     {
-                        compterPartieGagne(indexTour, eq1, eq2);
-                        if ((eq1.getPartiesGagnees()[indexTour] + eq2.getPartiesGagnees()[indexTour]) == epreuves.size() || (estScoreNul(indexTour, eq1) && estScoreNul(indexTour, eq2)))
-                        {
-                            result = true;
-                            fenetre.dispose();
-                        }
-                        else
-                        {
-                            result = false;
-                            MessageBox dialog = new MessageBox(fenetre, SWT.ERROR);
-                            dialog.setText("Attention !");
-                            dialog.setMessage("Veuillez entrer les scores afin que chaque épreuve soit gagnée par une seule équipe");
-                            dialog.open();
+                        result = true;
+                        fenetre.dispose();
+                    }
+                    else
+                    {
+                        result = false;
+                        MessageBox dialog = new MessageBox(fenetre, SWT.ERROR);
+                        dialog.setText("Attention !");
+                        dialog.setMessage("Veuillez entrer les scores afin que chaque épreuve soit gagnée par une seule équipe");
+                        dialog.open();
 
-                        }
                     }
                 }
             });
