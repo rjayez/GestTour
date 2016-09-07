@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Options>
+    <nbEpreuve>3</nbEpreuve>
+    <nbJoueurEquipe>2</nbJoueurEquipe>
+    <nbTour>3</nbTour>
+    <tarif>6.0</tarif>
+    <isLocked>false</isLocked>
+  </Options>
+  <Epreuve>
+    <nom>Ping Pong</nom>
+    <pointGagnant>33</pointGagnant>
+  </Epreuve>
+  <Epreuve>
+    <nom>Palet</nom>
+    <pointGagnant>11</pointGagnant>
+  </Epreuve>
+  <Epreuve>
+    <nom>Petanque</nom>
+    <pointGagnant>11</pointGagnant>
+  </Epreuve>
+</Configuration>
