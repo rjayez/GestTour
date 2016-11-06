@@ -1,6 +1,6 @@
-package Modele3P;
+package modele;
 
-import IHM.principale.IHM3P;
+import ihm.principale.IHM3P;
 
 import java.io.File;
 import java.io.FileNotFoundException;

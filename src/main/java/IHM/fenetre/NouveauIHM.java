@@ -1,7 +1,8 @@
-package IHM.fenetre;
+package ihm.fenetre;
 
-import Modele3P.Configuration;
-import Modele3P.Epreuve;
+import constantes.TexteIHM;
+import modele.Configuration;
+import modele.Epreuve;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -13,7 +14,16 @@ import java.util.ArrayList;
 
 public class NouveauIHM extends Dialog
 {
-	
+
+	public static final String FICHIER = "Fichier : ";
+	public static final String FICHIER_TOUNOIR = "Fichier Tounoir";
+	public static final String FICHIER_XML = "Fichier Xml";
+	public static final String JAVAX_SWING_PLAF_METAL_ICONS_OCEAN_DIRECTORY_GIF = "/javax/swing/plaf/metal/icons/ocean/directory.gif";
+	public static final String CONFIGURATION = "Configuration : ";
+	public static final String MESSAGE_TOURNOI_NON_SPECIFIE = "Il n'y a pas de nom de tournoi sp\u00E9cifi\u00E9";
+	public static final String FICHIER_DEJA_EXISTANT = "Le fichier existe d\u00E9jà. Veuillez choisir un autre nom";
+	public static final String NOUVEAU_TOURNOI_SLR = "NouveauTournoi.slr";
+
 	private Object result;
 	private Shell shell;
 	private Text tbFichier;
@@ -27,7 +37,7 @@ public class NouveauIHM extends Dialog
 	public NouveauIHM(Shell parent, int style)
 	{
 		super(parent, style);
-		setText("Nouveau Tournoi");
+		setText(TexteIHM.NOUVEAU_TOURNOI);
 	}
 	
 	/**
@@ -64,11 +74,11 @@ public class NouveauIHM extends Dialog
 		
 		Label lbFichier = new Label(shell, SWT.NONE);
 		lbFichier.setBounds(10, 34, 70, 20);
-		lbFichier.setText("Fichier : ");
+		lbFichier.setText(FICHIER);
 		
 		tbFichier = new Text(shell, SWT.BORDER);
 		tbFichier.setBounds(86, 31, 424, 26);
-		tbFichier.setText("NouveauTournoi.slr");
+		tbFichier.setText(NOUVEAU_TOURNOI_SLR);
 		
 		Button btnNewButton = new Button(shell, SWT.CENTER);
 		btnNewButton.addSelectionListener(new SelectionAdapter()
@@ -77,8 +87,8 @@ public class NouveauIHM extends Dialog
 			{
 				String filePath;
 				FileDialog fileDial = new FileDialog(getParent(), SWT.SAVE);
-				fileDial.setFilterNames(new String[] { "Fichier Tounoir", "Fichier Xml" });
-				fileDial.setFilterExtensions(new String[] { "*.slr", "*.xml" });
+				fileDial.setFilterNames(new String[] {FICHIER_TOUNOIR, FICHIER_XML});
+				fileDial.setFilterExtensions(new String[] {TexteIHM.PATTERN_EXTENSION_SLR, TexteIHM.PATTERN_EXTENTION_XML});
 				
 				filePath = fileDial.open();
 				if (filePath != null)
@@ -88,16 +98,16 @@ public class NouveauIHM extends Dialog
 				
 			}
 		});
-		btnNewButton.setImage(SWTResourceManager.getImage(NouveauIHM.class, "/javax/swing/plaf/metal/icons/ocean/directory.gif"));
+		btnNewButton.setImage(SWTResourceManager.getImage(NouveauIHM.class, JAVAX_SWING_PLAF_METAL_ICONS_OCEAN_DIRECTORY_GIF));
 		btnNewButton.setBounds(516, 29, 28, 30);
 		
 		Label lblConfiguration = new Label(shell, SWT.NONE);
 		lblConfiguration.setBounds(10, 85, 102, 20);
-		lblConfiguration.setText("Configuration : ");
+		lblConfiguration.setText(CONFIGURATION);
 		
 		Button btnConfig = new Button(shell, SWT.NONE);
 		btnConfig.setBounds(118, 80, 130, 30);
-		btnConfig.setText("Modifier");
+		btnConfig.setText(TexteIHM.MODIFIER);
 		
 		Button btnOk = new Button(shell, SWT.NONE);
 		btnOk.addSelectionListener(new SelectionAdapter()
@@ -118,8 +128,8 @@ public class NouveauIHM extends Dialog
                     else
                     {
                         MessageBox dialog = new MessageBox(shell, SWT.OK);
-                        dialog.setText("Attention");
-                        dialog.setMessage("Le fichier existe déjà. Veuillez choisir un autre nom");
+                        dialog.setText(TexteIHM.ATTENTION);
+                        dialog.setMessage(FICHIER_DEJA_EXISTANT);
                         dialog.open();
                     }
 					
@@ -127,8 +137,8 @@ public class NouveauIHM extends Dialog
 				else
 				{
 					MessageBox dialog = new MessageBox(shell, SWT.OK);
-					dialog.setText("Attention");
-					dialog.setMessage("Il n'y a pas de nom de tournoi spécifié");
+					dialog.setText(TexteIHM.ATTENTION);
+					dialog.setMessage(MESSAGE_TOURNOI_NON_SPECIFIE);
 					dialog.open();
 				}
 				
@@ -148,11 +158,11 @@ public class NouveauIHM extends Dialog
 			}
 		});
 		btnCancel.setBounds(326, 126, 90, 30);
-		btnCancel.setText("Annuler");
+		btnCancel.setText(TexteIHM.ANNULER);
 		
 		Label lblNonImplant = new Label(shell, SWT.NONE);
 		lblNonImplant.setBounds(273, 85, 91, 20);
-		lblNonImplant.setText("Non implant\u00E9");
+		lblNonImplant.setText(TexteIHM.NON_IMPLANTE);
 		
 	}
 }

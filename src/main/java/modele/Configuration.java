@@ -1,4 +1,4 @@
-package Modele3P;
+package modele;
 
 import java.util.Collections;
 import java.util.LinkedList;

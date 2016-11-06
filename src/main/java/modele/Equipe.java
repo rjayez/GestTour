@@ -1,6 +1,6 @@
-package Modele3P;
+package modele;
 
-import Utils.comparator.ComparatorEquipeScorePondere;
+import utils.comparator.ComparatorEquipeScorePondere;
 
 import java.util.ArrayList;
 import java.util.Collections;

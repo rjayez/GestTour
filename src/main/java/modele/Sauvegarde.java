@@ -1,5 +1,6 @@
-package Modele3P;
+package modele;
 
+import constantes.TexteIHM;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 
 public class Sauvegarde
 {
@@ -44,7 +46,7 @@ public class Sauvegarde
 		{
 			equipes.clear();
 			epreuves.clear();
-			racine = new Element("Configuration");
+			racine = new Element(TexteIHM.CONFIGURATION);
 			doc = new Document(racine);
 			try
 			{
@@ -59,7 +61,7 @@ public class Sauvegarde
 				
 				racine = doc.getRootElement();
 				
-				Element options = racine.getChild("Options");
+				Element options = racine.getChild(TexteIHM.OPTIONS);
 				
 				/*
 				 * Element eleSavePath = options.getChild("savePath"); config.setCheminConfigActuel(eleSavePath.getText());
@@ -192,10 +194,10 @@ public class Sauvegarde
 	public void enregistrer(String fichier, ArrayList<Equipe> equipes, ArrayList<Epreuve> epreuves)
 	{
 
-		racine = new Element("Configuration");
+		racine = new Element(TexteIHM.CONFIGURATION);
 		doc = new Document(racine);
 		// Les options
-		Element eleOptions = new Element("Options");
+		Element eleOptions = new Element(TexteIHM.OPTIONS);
 		
 		ArrayList<Element> listElemOpt = new ArrayList<>();
 		

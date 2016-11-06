@@ -1,6 +1,7 @@
-package Modele3P;
+package modele;
 
-import Utils.GestTourUtils;
+import constantes.TexteIHM;
+import utils.GestTourUtils;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Font.FontFamily;
@@ -22,10 +23,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.List;
 
 
 public class Impression {
+
+    public static final String SCORE_TOUR = "ScoreTour";
+    public static final String EXTENSION_PDF = ".pdf";
+    public static final String FLECHE_DROITE_PNG = "fleche droite.png";
+    public static final String TOUR_NUMERO = "Tour n\u00b0";
+    public static final String EQUIPE_NUMERO = "Equipe n\u00b0";
+    public static final String TERRAIN = "Terrain";
+    public static final String TOTAL_DE_VICTOIRE = "Total de\n Victoire";
+    public static final String COMMENTAIRES = "Commentaires";
+    public static final String CATEGORIE = "Catégorie";
+    public static final String SCORE = "Score";
+    public static final String EPREUVES_GAGNEES = "Epreuves Gagnées";
+    public static final String NUMERO_POINT = "N\u00b0.";
+    public static final String CLASSEMENT_CAT_ABREV = "Cl. Cat.";
+    public static final String CLASSEMEN_ABREV = "Cl.";
+    public static final String CLASSEMENT = "Classement";
+    public static final String CLASSEMENT_FINAL = "Classement Final";
+    public static final String TERRAIN_NUMERO = "Terrain N\u00b0";
+    public static final String PREFIXE_NOM_FICHIER_PDF = "Feuille Rencontre Tour";
+    public static final String PREFIX_NOM_FICHIER_SCORE_TOUR = "Score Tour";
+    public static final String PREFIX_NOM_FICHIER_RENCONTRE = "Rencontre Tour";
 
     private final Configuration config;
     private static Impression instance;
@@ -51,7 +72,7 @@ public class Impression {
         try {
 
             String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
-            final String nomFichierPdf = "Feuille Rencontre Tour " + numeroTour + " - " + complementTitrePdf + ".pdf";
+            final String nomFichierPdf = PREFIXE_NOM_FICHIER_PDF + TexteIHM.ESPACE + numeroTour + " - " + complementTitrePdf + EXTENSION_PDF;
 
             PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPdf));
 
@@ -121,7 +142,7 @@ public class Impression {
 
         PdfPCell cellFleche = new PdfPCell(cellSansBordure);
         try {
-            Image imageFleche = Image.getInstance("fleche droite.png");
+            Image imageFleche = Image.getInstance(FLECHE_DROITE_PNG);
 
             cellFleche.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cellFleche.setImage(imageFleche);
@@ -135,11 +156,11 @@ public class Impression {
         cell.setFixedHeight(50);
 
         // ligne 1
-        cell.setPhrase(new Phrase("Tour n°\n" + strRenc[0], font));
+        cell.setPhrase(new Phrase(TOUR_NUMERO +  System.lineSeparator() + strRenc[0], font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase("Equipe n°\n" + strRenc[1], font));
+        cell.setPhrase(new Phrase(EQUIPE_NUMERO + System.lineSeparator() + strRenc[1], font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase("Equipe n°\n" + strRenc[2], font));
+        cell.setPhrase(new Phrase(EQUIPE_NUMERO + System.lineSeparator() + strRenc[2], font));
         table.addCell(cell);
 
         initialiserListeEpreuveFeuilleMarque(epreuves);
@@ -148,14 +169,14 @@ public class Impression {
         for (Epreuve epreuve : listEpreuveFeuille) {
 
 
-            cell.setPhrase(new Phrase(epreuve.getNom() + "\nTerrain " + strRenc[3], font));
+            cell.setPhrase(new Phrase(epreuve.getNom() + System.lineSeparator() + TERRAIN + TexteIHM.ESPACE + strRenc[3], font));
             table.addCell(cell);
             table.addCell(cellVide);
             table.addCell(cellVide);
         }
 
         // dernière ligne
-        cell.setPhrase(new Phrase("Total de\n Victoire", font));
+        cell.setPhrase(new Phrase(TOTAL_DE_VICTOIRE, font));
         table.addCell(cell);
         table.addCell(cellVide);
         table.addCell(cellVide);
@@ -186,12 +207,12 @@ public class Impression {
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try {
             String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
-            final String nomFichierPdf = "Rencontre Tour " + numTour + " - " + complementTitrePdf + ".pdf";
+            final String nomFichierPdf = PREFIX_NOM_FICHIER_RENCONTRE + TexteIHM.ESPACE + numTour + " - " + complementTitrePdf + EXTENSION_PDF;
 
             PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPdf));
 
             doc.open();
-            doc.addTitle("Tour n°" + numTour);
+            doc.addTitle(TOUR_NUMERO + numTour);
             doc.add(createTableRencontre(table, numTour));
 
             doc.close();
@@ -220,31 +241,31 @@ public class Impression {
         pdfTable.setWidthPercentage(99);
         TableItem[] items = table.getItems();
         Font font = new Font(FontFamily.HELVETICA, 25);
-        PdfPCell cell = new PdfPCell(new Phrase("Tour n°" + numTour, font));
+        PdfPCell cell = new PdfPCell(new Phrase(TOUR_NUMERO + numTour, font));
         cell.setColspan(NOMBRE_COLONNE);
         pdfTable.addCell(cell);
         font.setSize(15);
 
         // Ajout des entetes (7 colonnes)
-        cell = new PdfPCell(new Phrase("N°"));
+        cell = new PdfPCell(new Phrase(TexteIHM.NUMERO));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Noms"));
+        cell = new PdfPCell(new Phrase(TexteIHM.NOMS));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase(""));
+        cell = new PdfPCell(new Phrase(TexteIHM.CHAINE_VIDE));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("N°"));
+        cell = new PdfPCell(new Phrase(TexteIHM.NUMERO));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Noms"));
+        cell = new PdfPCell(new Phrase(TexteIHM.NOMS));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Epreuves"));
+        cell = new PdfPCell(new Phrase(TexteIHM.EPREUVES));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Terrain N°"));
+        cell = new PdfPCell(new Phrase(TERRAIN_NUMERO));
         cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
         pdfTable.addCell(cell);
 
@@ -266,11 +287,11 @@ public class Impression {
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try {
             String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
-            final String nomFichierPDF = "Classement Final - " + complementTitrePdf + ".pdf";
+            final String nomFichierPDF = CLASSEMENT_FINAL + " - " + complementTitrePdf + EXTENSION_PDF;
             PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPDF));
 
             doc.open();
-            doc.addTitle("Classement");
+            doc.addTitle(CLASSEMENT);
             doc.add(createTableClassement(table, isCategorie));
 
             doc.close();
@@ -305,23 +326,23 @@ public class Impression {
         }
 
         // Ajout des entetes
-        PdfPCell cell = new PdfPCell(new Phrase("Cl."));
+        PdfPCell cell = new PdfPCell(new Phrase(CLASSEMEN_ABREV));
         pdfTable.addCell(cell);
         if (isCategorie) {
-            cell = new PdfPCell(new Phrase("Cl. Cat."));
+            cell = new PdfPCell(new Phrase(CLASSEMENT_CAT_ABREV));
             pdfTable.addCell(cell);
         }
-        cell = new PdfPCell(new Phrase("N°."));
+        cell = new PdfPCell(new Phrase(NUMERO_POINT));
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Noms"));
+        cell = new PdfPCell(new Phrase(TexteIHM.NOMS));
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Epreuves Gagnées"));
+        cell = new PdfPCell(new Phrase(EPREUVES_GAGNEES));
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Score"));
+        cell = new PdfPCell(new Phrase(SCORE));
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Catégorie"));
+        cell = new PdfPCell(new Phrase(CATEGORIE));
         pdfTable.addCell(cell);
-        cell = new PdfPCell(new Phrase("Commentaires"));
+        cell = new PdfPCell(new Phrase(COMMENTAIRES));
         pdfTable.addCell(cell);
 
         font.setSize(12);
@@ -346,11 +367,11 @@ public class Impression {
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try {
             String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
-            final String nomFichierPDF = "Score Tour " + (indexTour + 1) + " - " + complementTitrePdf + ".pdf";
+            final String nomFichierPDF =  PREFIX_NOM_FICHIER_SCORE_TOUR + TexteIHM.ESPACE + (indexTour + 1) + " - " + complementTitrePdf + EXTENSION_PDF;
             PdfWriter.getInstance(doc, new FileOutputStream(nomFichierPDF));
 
             doc.open();
-            doc.addTitle("ScoreTour");
+            doc.addTitle(SCORE_TOUR);
             doc.add(createTableScoreTour(table, listRenc));
             System.out.println(config.getSaveFile());
             doc.close();

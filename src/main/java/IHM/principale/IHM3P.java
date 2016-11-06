@@ -1,11 +1,12 @@
-package IHM.principale;
+package ihm.principale;
 
-import Constantes.TexteIHM;
-import IHM.fenetre.InscriptionIHM;
-import IHM.fenetre.NouveauIHM;
-import IHM.fenetre.PreferenceIHM;
-import IHM.fenetre.ScoreIHM;
-import Modele3P.*;
+import constantes.TexteIHM;
+import ihm.fenetre.InscriptionIHM;
+import ihm.fenetre.NouveauIHM;
+import ihm.fenetre.PreferenceIHM;
+import ihm.fenetre.ScoreIHM;
+import modele.*;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FillLayout;
@@ -22,6 +23,58 @@ import java.util.*;
 
 public class IHM3P {
 
+    public static final String TOUR_VERROUILLE = "Tour verrouill\u00E9";
+    public static final String VERROUILLER_LE_TOUR = "Verrouiller le tour";
+    public static final String MESSAGE_DEMANDE_SAVE_AVANT_EXIT = "Voulez vous enregistrer avant de quitter ?";
+    public static final String DEVERROUILLER_INSCRIPTION = "D\u00E9verrouiller l'inscription";
+    public static final String VERROUILLER_INSCRIPTION = "Verrouiller l'inscription";
+    public static final String FORMAT_NOMBRE_1_DECIMAL = "%,.1f";
+    public static final String MESSAGE_TOUR_PRECEDENT_NON_TERMINE = "Le tour pr\u00E9c\u00E9dent n'est pas termin\u00E9\n Retour sur le tour 1";
+    public static final String MESSAGE_TOUR_PRECEDENT_NON_VERROUILLE = "Il faut verrouiller l'inscription avant d'acc\u00E9der au tour" + "\nRetour sur la page d'inscription";
+    public static final String MESSAGE_NOMBRE_EQUIPE_INSUFFISANTE = "Le nombre d'\u00E9quipe est insuffisante pour d\u00E9marrer le tournoi" + "\nRetour sur la page d'inscription";
+    public static final String SLASH = "/";
+    public static final String MESSAGE_REINITIALISATION_TOURNOI = "R\u00E9initialisations du tournoi !";
+    public static final String COMMENTAIRES = "Commentaires";
+    public static final String PLACE = "Place";
+    public static final String EPREUVES_GAGNEES = "Epreuves Gagn\u00E9es";
+    public static final String PLACE_CATEGORIE = "Place Cat\u00E9gorie";
+    public static final String POURCENTAGE_SCORE = "% Score";
+    public static final String NOMS_DES_JOUEURS = "Noms des joueurs";
+    public static final String NUMERO = "N\u00b0";
+    public static final String TOUR_ESPACE = "Tour ";
+    public static final String MESSAGE_TOUR_NON_FINI = "Le tour n'est pas fini.";
+    public static final String MESSAGE_CONFIRMATION_VERROUILLAGE_TOUR = "\u00cates-vous s\u00fbr de vouloir verrouiller le tour ? Les scores ne seront plus modifiables après.";
+    public static final String IMPRIMER_SCORE_TOUR = "Imprimer\n Score Tour";
+    public static final String MESSAGE_TOUR_FINI_VERROUILLAGE_SCORE = "Le tour est fini, vous ne pouvez plus modifier les scores.";
+    public static final String MESSAGE_TOUR_PRECEDENT_NON_FINI = "Le tour pr\u00E9c\u00E9dent n'est pas fini. Assurez-vous qu'il est verrouill\u00E9.";
+    public static final String MESSAGE_ERREUR_EQUIPE_SEULE = "L'\u00E9quipe n'a pas d'adversaire pour ce tour.";
+    public static final String TABLEAU_DES_SCORES = "Tableau des scores";
+    public static final String MESSAGE_LISTE_RENCONTRE_VIDE = "La liste des rencontres est vide";
+    public static final String IMPRIMER_FEUILLE_RENCONTRE = "Imprimer\n Feuille Rencontre";
+    public static final String UNE_FEUILLE_PAR_RENCONTRE = "Une feuille par rencontre";
+    public static final String UNE_FEUILLE_PAR_EQUIPE = "Une feuille par \u00E9quipe";
+    public static final String IMPRIMER_FEUILLE_DE_MARQUE = "Imprimer\n Feuille de Marque";
+    public static final String NUMERO_TERRAIN = "N\u00b0 Terrain";
+    public static final String TABLEAU_DES_RENCONTRES = "Tableau des rencontres";
+    public static final String MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE = "\u00cates-vous s\u00fbr de vouloir supprimer cette \u00E9quipe" + "\n Cela entraine la modification des " +
+            "num\u00E9ros des \u00E9quipes";
+    public static final String SUPPRESION_EQUIPE = "Suppresion \u00E9quipe";
+    public static final String NOMBRE_EQUIPES_INSCRITE_INSUFFISANTE = "Nombre d'\u00E9quipes inscrite insuffisante";
+    public static final String MESSAGE_NOMBRE_EQUIPE_IMPAIR = "Le nombre d'\u00E9quipe est impair\n Veuillez rajouter ou enlevez une \u00E9quipe";
+    public static final String TOURNOI_COMMENCE = "Tournoi commenc\u00E9";
+    public static final String MESSAGE_TOURNOI_COMMENCE = "Des scores ont d\u00E9jà \u00E9t\u00E9 saisie, cela signifie que le tournoi a commenc\u00E9. " + "\nVous ne pouvez plus ajouter ou supprimer d'\u00E9quipe";
+    public static final String MESSAGE_INSCRIPTION_VERROUILLEES = "Les inscriptions sont verrouill\u00E9es";
+    public static final String SUPPRIMER_UNE_EQUIPE = "Supprimer une \u00E9quipe";
+    public static final String AJOUTER_MODIFIER_UNE_EQUIPE = "Ajouter/Modifier une \u00E9quipe";
+    public static final String TARIF_PAR_EQUIPE = "Tarif par \u00E9quipe :";
+    public static final String EUROS = "Euros";
+    public static final String FICHIER_TOURNOI = "Fichier Tournoi";
+    public static final String FICHIER_XML = "Fichier Xml";
+    public static final String FICHIER_TOURNOI_SANS_ESPACE = "FichierTournoi";
+    public static final String MESSAGE_CONFIRMATION_REINITIALISATION_TOURNOI = "\u00cates-vous s\u00fbr de voulair r\u00E9initialiser le tournoi ?\n Ceci effacera " +
+            "l'int\u00E9gralit\u00E9 " +
+            "du tournoi en cours";
+    public static final String FIN_FICHIER_OLD_SLR = "_old.slr";
     private final ArrayList<Equipe> equipes;
     private final Sauvegarde save;
     private final Impression pdf;
@@ -32,7 +85,7 @@ public class IHM3P {
 
     private boolean isCategorie;
 
-    // Variable IHM
+    // Variable ihm
     private final Shell fenetre;
     private final Display display;
     private final ArrayList<Table> tablesRenc;
@@ -58,7 +111,7 @@ public class IHM3P {
         this.uneFeuilleMarqueParEquipe = true;
         display = new Display();
         fenetre = new Shell(display, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
-        fenetre.setText("GestTour");
+        fenetre.setText(TexteIHM.GEST_TOUR);
         fenetre.setMaximized(true);
         tablesScore = new ArrayList<>();
         tablesRenc = new ArrayList<>();
@@ -93,8 +146,7 @@ public class IHM3P {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                save.enregistrer(System.getProperty("user.home") + "\\temp\\" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-YY HH-mm")) + ".slr", equipes,
-                        epreuves);
+                save.enregistrer(System.getProperty("user.home") + "\\temp\\" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-YY HH-mm")) + TexteIHM.EXTENSION_SLR, equipes, epreuves);
 
                 estDonneesAJour = true;
             }
@@ -113,7 +165,7 @@ public class IHM3P {
         // Lancement de la fenétre
         fenetre.open();
 
-        // Boucle essentiel de l'IHM
+        // Boucle essentiel de l'ihm
         while (!fenetre.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -134,10 +186,10 @@ public class IHM3P {
         for (int i = 0; i < tabBtnVerrouillerTour.length; i++) {
 
             if (config.getTourFini()[i]) {
-                tabBtnVerrouillerTour[i].setText("Tour verrouillé");
+                tabBtnVerrouillerTour[i].setText(TOUR_VERROUILLE);
                 tabBtnVerrouillerTour[i].setEnabled(false);
             } else {
-                tabBtnVerrouillerTour[i].setText("Verrouiller le tour");
+                tabBtnVerrouillerTour[i].setText(VERROUILLER_LE_TOUR);
                 tabBtnVerrouillerTour[i].setEnabled(true);
             }
         }
@@ -153,8 +205,8 @@ public class IHM3P {
     private void lancerDialogExitApplication(Event event) {
         MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO | SWT.CANCEL);
 
-        dialog.setText("Enregistrement");
-        dialog.setMessage("Voulez vous enregistrer avant de quitter ?");
+        dialog.setText(TexteIHM.ENREGISTREMENT);
+        dialog.setMessage(MESSAGE_DEMANDE_SAVE_AVANT_EXIT);
         int i = dialog.open();
         if (i == SWT.YES) {
             // Enregistre et ferme l'application
@@ -217,7 +269,7 @@ public class IHM3P {
         }
 
         infoEquipe.add(equipe.getCategorie().toString());
-        infoEquipe.add(4, ""); // blanc pour la zone de séparation du tableau
+        infoEquipe.add(4, TexteIHM.CHAINE_VIDE); // blanc pour la zone de séparation du tableau
 
         tiEquipe.setText(infoEquipe.toArray(new String[9]));
 
@@ -242,9 +294,9 @@ public class IHM3P {
             strInfo[i - 1] = eq.getCategorie().toString();
 
             if (eq.isPresent()) {
-                strInfo[strInfo.length - 1] = "Oui";
+                strInfo[strInfo.length - 1] = TexteIHM.OUI;
             } else {
-                strInfo[strInfo.length - 1] = "Non";
+                strInfo[strInfo.length - 1] = TexteIHM.NON;
             }
 
             TableItem ti = new TableItem(table, 0);
@@ -252,9 +304,9 @@ public class IHM3P {
         }
 
         if (config.isLockedInsc()) {
-            btnVerrouillerInsc.setText("Déverrouiller l'inscription");
+            btnVerrouillerInsc.setText(DEVERROUILLER_INSCRIPTION);
         } else {
-            btnVerrouillerInsc.setText("Verrouiller l'inscription");
+            btnVerrouillerInsc.setText(VERROUILLER_INSCRIPTION);
         }
 
     }
@@ -312,7 +364,7 @@ public class IHM3P {
             strInfo[3] = Integer.toString(eq.getScoreTotalTour(indexTour));
             // Colonne 5 : Scores total pondéré
             float pourcentageScore = (eq.getScoreTotalTourPondere(epreuves, indexTour) / diviseur) * 100;
-            strInfo[4] = String.format("%,.1f", pourcentageScore);
+            strInfo[4] = String.format(FORMAT_NOMBRE_1_DECIMAL, pourcentageScore);
 
             TableItem ti = new TableItem(table, 0);
             ti.setText(strInfo);
@@ -344,7 +396,7 @@ public class IHM3P {
             strInfo[5] = Integer.toString(eq.getScoreTotal());
 
             float pourcentageScore = (eq.getScoreTotalPondere(epreuves) / diviseur) * 100;
-            strInfo[6] = String.format("%,.1f", pourcentageScore);
+            strInfo[6] = String.format(FORMAT_NOMBRE_1_DECIMAL, pourcentageScore);
             strInfo[INDEX_COLONNE_CATEGORIE] = eq.getCategorie().toString();
             // strInfo[7] = eq.getCommentaire;
 
@@ -667,10 +719,10 @@ public class IHM3P {
 
     }
 
-    // Fonction creation de contenu d'IHM **************************************
+    // Fonction creation de contenu d'ihm **************************************
 
     /**
-     * Fonction creation de contenu d'IHM
+     * Fonction creation de contenu d'ihm
      */
     private void createContents() {
 
@@ -706,7 +758,7 @@ public class IHM3P {
                                 onglet.setSelection(1);
                                 MessageBox dialog = new MessageBox(fenetre, SWT.OK);
                                 dialog.setText(TexteIHM.Titre.ATTENTION);
-                                dialog.setMessage("Le tour précédent n'est pas terminé\n Retour sur le tour 1");
+                                dialog.setMessage(MESSAGE_TOUR_PRECEDENT_NON_TERMINE);
                                 dialog.open();
                             }
 
@@ -739,10 +791,10 @@ public class IHM3P {
                         dialog.setText(TexteIHM.Titre.ATTENTION);
                         if (!config.isLockedInsc()) {
                             onglet.setSelection(0);
-                            dialog.setMessage("Il faut verrouiller l'inscription avant d'accéder au tour" + "\nRetour sur la page d'inscription");
+                            dialog.setMessage(MESSAGE_TOUR_PRECEDENT_NON_VERROUILLE);
                         } else if (equipes.size() <= config.getNbTour()) {
                             onglet.setSelection(0);
-                            dialog.setMessage("Le nombre d'équipe est insuffisante pour démarrer le tournoi" + "\nRetour sur la page d'inscription");
+                            dialog.setMessage(MESSAGE_NOMBRE_EQUIPE_INSUFFISANTE);
                         }
 
                         dialog.open();
@@ -764,17 +816,17 @@ public class IHM3P {
     private void creerOnglet(TabFolder onglet) {
 
         TabItem ongletInsc = new TabItem(onglet, SWT.NONE);
-        ongletInsc.setText("Inscription");
+        ongletInsc.setText(TexteIHM.INSCRIPTION);
         ongletPrincipaux.add(ongletInsc);
 
         for (int i = 0; i < config.getNbTour(); i++) {
             TabItem o = new TabItem(onglet, SWT.None);
-            o.setText("Tour " + (i + 1));
+            o.setText(TOUR_ESPACE + (i + 1));
             ongletPrincipaux.add(o);
         }
 
         TabItem ongletClass = new TabItem(onglet, SWT.None);
-        ongletClass.setText("Classement");
+        ongletClass.setText(TexteIHM.CLASSEMENT);
         ongletPrincipaux.add(ongletClass);
 
     }
@@ -784,12 +836,12 @@ public class IHM3P {
 
         // Menu déroulant Fichier
         MenuItem miFichier = new MenuItem(menu, SWT.CASCADE);
-        miFichier.setText("Fichier");
+        miFichier.setText(TexteIHM.FICHIER);
 
         Menu menuFichier = new Menu(fenetre, SWT.DROP_DOWN);
         miFichier.setMenu(menuFichier);
         MenuItem miNew = new MenuItem(menuFichier, SWT.PUSH);
-        miNew.setText("Nouveau");
+        miNew.setText(TexteIHM.NOUVEAU);
 
         miNew.addSelectionListener(new SelectionListener() {
 
@@ -814,14 +866,14 @@ public class IHM3P {
         });
 
         MenuItem miOuvrir = new MenuItem(menuFichier, SWT.PUSH);
-        miOuvrir.setText("Ouvrir");
+        miOuvrir.setText(TexteIHM.OUVRIR);
         miOuvrir.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
                 FileDialog fileDial = new FileDialog(fenetre, SWT.OPEN);
 
-                fileDial.setFilterExtensions(new String[]{"*.slr", "*.xml"});
-                fileDial.setFilterNames(new String[]{"Fichier Tournoi ", "Fichier Xml"});
+                fileDial.setFilterExtensions(new String[]{TexteIHM.PATTERN_EXTENSION_SLR, TexteIHM.PATTERN_EXTENTION_XML});
+                fileDial.setFilterNames(new String[]{FICHIER_TOURNOI, FICHIER_XML});
 
                 String filePath = fileDial.open();
 
@@ -845,7 +897,7 @@ public class IHM3P {
         @SuppressWarnings("unused") MenuItem miSeparator = new MenuItem(menuFichier, SWT.SEPARATOR);
 
         MenuItem miSave = new MenuItem(menuFichier, SWT.PUSH);
-        miSave.setText("Enregistrer");
+        miSave.setText(TexteIHM.ENREGISTRER);
         miSave.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -860,16 +912,17 @@ public class IHM3P {
         });
 
         MenuItem miSaveAs = new MenuItem(menuFichier, SWT.PUSH);
-        miSaveAs.setText("Enregistrez sous");
+        miSaveAs.setText(TexteIHM.ENREGISTREZ_SOUS);
         miSaveAs.addSelectionListener(new SelectionListener() {
 
             @Override
             public void widgetSelected(SelectionEvent arg0) {
                 FileDialog saveDial = new FileDialog(fenetre, SWT.SAVE);
-                saveDial.setFileName("FichierTournoi");
+                saveDial.setFileName(FICHIER_TOURNOI_SANS_ESPACE);
 
-                saveDial.setFilterExtensions(new String[]{"*.SLR", "*.xml"});
-                saveDial.setFilterNames(new String[]{"Fichier Tournoi", "Fichier XML"});
+                saveDial.setFilterExtensions(new String[]{TexteIHM.PATTERN_EXTENSION_SLR, TexteIHM.PATTERN_EXTENTION_XML});
+                saveDial.setFilterNames(new String[]{IHM3P.FICHIER_TOURNOI, IHM3P.FICHIER_XML});
+                saveDial.setFilterNames(new String[]{IHM3P.FICHIER_TOURNOI, IHM3P.FICHIER_XML});
                 String saveFile = saveDial.open();
                 if (saveFile != null) {
 
@@ -877,7 +930,7 @@ public class IHM3P {
                     config.fichierRecent(saveFile);
                     save.enregistrer(saveFile, equipes, epreuves);
                     estDonneesAJour = true;
-                    fenetre.setText("TourManage - " + config.getSaveFile());
+                    fenetre.setText("GestTour" + " - " + config.getSaveFile());
 
                 }
 
@@ -892,11 +945,11 @@ public class IHM3P {
         LinkedList<String> previousFile = config.getPrevFile();
 
         for (final String string : previousFile) {
-            if (!string.equals("")) {
+            if (StringUtils.isNotBlank(string)) {
                 MenuItem miFicherRecent = new MenuItem(menuFichier, SWT.CASCADE);
                 String fichier;
-                if (string.lastIndexOf("/") != -1) {
-                    fichier = string.substring(string.lastIndexOf("/"));
+                if (string.lastIndexOf(SLASH) != -1) {
+                    fichier = string.substring(string.lastIndexOf(SLASH));
                 } else {
                     fichier = string;
                 }
@@ -926,7 +979,7 @@ public class IHM3P {
 
 
         MenuItem miExit = new MenuItem(menuFichier, SWT.CASCADE);
-        miExit.setText("Quitter");
+        miExit.setText(TexteIHM.QUITTER);
         miExit.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
@@ -940,7 +993,7 @@ public class IHM3P {
         });
 
         MenuItem miSave2 = new MenuItem(menu, SWT.CASCADE);
-        miSave2.setText("Enregistrer");
+        miSave2.setText(TexteIHM.ENREGISTRER);
         miSave2.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -955,12 +1008,12 @@ public class IHM3P {
         });
 
         MenuItem miOptions = new MenuItem(menu, SWT.CASCADE);
-        miOptions.setText("Options");
+        miOptions.setText(TexteIHM.OPTIONS);
 
         Menu mOptions = new Menu(fenetre, SWT.DROP_DOWN);
 
         MenuItem miPref = new MenuItem(mOptions, SWT.PUSH);
-        miPref.setText("Préférences");
+        miPref.setText(TexteIHM.PREFERENCES);
         miPref.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
@@ -983,19 +1036,19 @@ public class IHM3P {
         });
 
         MenuItem miReset = new MenuItem(mOptions, SWT.PUSH);
-        miReset.setText("Réinitialiser");
+        miReset.setText(TexteIHM.REINITIALISER);
         miReset.addSelectionListener(new SelectionListener() {
 
             @Override
             public void widgetSelected(SelectionEvent arg0) {
 
                 MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                dialog.setText("Réinitialisations du tournoi !");
-                dialog.setMessage("Etes vous sur de voulair réinitialiser le tournoi ?\n Ceci effacera l'intégralité du tournoi en cours");
+                dialog.setText(MESSAGE_REINITIALISATION_TOURNOI);
+                dialog.setMessage(MESSAGE_CONFIRMATION_REINITIALISATION_TOURNOI);
                 int i = dialog.open();
 
                 if (i == SWT.YES) {
-                    save.enregistrer(config.getSaveFile().replaceAll(".slr", "_old.slr"), equipes, epreuves); // Création d'un backup ?
+                    save.enregistrer(config.getSaveFile().replaceAll(TexteIHM.EXTENSION_SLR, FIN_FICHIER_OLD_SLR), equipes, epreuves); // Création d'un backup ?
                     estDonneesAJour = true;
                     equipes.clear();
                     initAffichage(tableInsc);
@@ -1016,21 +1069,7 @@ public class IHM3P {
     private ArrayList<String[]> getListeRencontre(int indexTour, Table tableRencontre, boolean uneFeuilleParEquipe) {
         Equipe.ordonnerEquipe(equipes);
         ArrayList<String[]> listRenc = new ArrayList<>();
-        //String[] strFeuille;
-//        for (Equipe eq : equipes)
-//        {
-//            if (eq.getEquipesJouees()[indexTour] != 0)
-//            {
-//                strFeuille = new String[4];
-//                strFeuille[0] = Integer.toString(indexTour + 1);
-//                strFeuille[1] = eq.getNumeroStr();
-//                strFeuille[2] = Integer.toString(eq.getEquipesJouees()[indexTour]);
-//                strFeuille[3] =
-//
-//                listRenc.add(strFeuille);
-//            }
-//
-//        }
+
 
         for (TableItem item : tableRencontre.getItems()) {
             String[] strFeuille = new String[5];
@@ -1065,19 +1104,19 @@ public class IHM3P {
         compInscription.setLayout(gridL);
 
         ArrayList<String[]> columsInscription = new ArrayList<>();
-        columsInscription.add(new String[]{"N°", "35"});
+        columsInscription.add(new String[]{NUMERO, "35"});
         for (int i = 0; i < config.getNbJoueurEquipe(); i++) {
-            columsInscription.add(new String[]{"Nom", "150"});
-            columsInscription.add(new String[]{"Prenom", "150"});
-            columsInscription.add(new String[]{"Ville", "150"});
-            columsInscription.add(new String[]{"", "10"});
+            columsInscription.add(new String[]{TexteIHM.NOM, "150"});
+            columsInscription.add(new String[]{TexteIHM.PRENOM, "150"});
+            columsInscription.add(new String[]{TexteIHM.VILLE, "150"});
+            columsInscription.add(new String[]{TexteIHM.CHAINE_VIDE, "10"});
         }
         // Supprime la dernière colonne vide
         columsInscription.remove(columsInscription.size() - 1);
 
-        columsInscription.add(new String[]{"Catégorie", "150"});
+        columsInscription.add(new String[]{TexteIHM.CATEGORIE, "150"});
 
-        columsInscription.add(new String[]{"Présence", "75"});
+        columsInscription.add(new String[]{TexteIHM.PRESENCE, "75"});
 
         // Tableau d'inscription
         final Table tableInsc = creerTable(compInscription, columsInscription);
@@ -1099,7 +1138,7 @@ public class IHM3P {
                 if (config.isLockedInsc()) {
                     MessageBox dialog = new MessageBox(fenetre, SWT.OK);
                     dialog.setText(TexteIHM.Titre.ATTENTION);
-                    dialog.setMessage("Les inscriptions sont verrouillées");
+                    dialog.setMessage(MESSAGE_INSCRIPTION_VERROUILLEES);
                     dialog.open();
                 } else {
                     ajoutModifEquipe(tableInsc);
@@ -1111,26 +1150,26 @@ public class IHM3P {
 
         // Label tarifs
         Label lTarif = new Label(compInscription, 0);
-        lTarif.setText("Tarif par équipe :");
+        lTarif.setText(TARIF_PAR_EQUIPE);
         gData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
         gData.verticalIndent = 15;
         lTarif.setLayoutData(gData);
 
         lTarif = new Label(compInscription, 0);
-        lTarif.setText(config.getTarif() + " Euros");
+        lTarif.setText(config.getTarif() + " " + EUROS);
         gData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
         gData.verticalIndent = 15;
         lTarif.setLayoutData(gData);
 
         // Bouton ajout/modification inscription
         final Button bt1 = new Button(compInscription, SWT.PUSH);
-        bt1.setText("Ajouter/Modifier une équipe");
+        bt1.setText(AJOUTER_MODIFIER_UNE_EQUIPE);
         bt1.addSelectionListener(new SelectionListener() {
             // TODO Griser le bouton quand les inscriptions sont verrouiller
             @Override
             public void widgetSelected(SelectionEvent arg0) {
                 if (config.isLockedInsc()) {
-                    ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, "Les inscriptions sont verrouillées", fenetre, SWT.OK);
+                    ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_INSCRIPTION_VERROUILLEES, fenetre, SWT.OK);
                 } else {
                     //Equipe.effacerScore(equipes);
                     ajoutModifEquipe(tableInsc);
@@ -1148,7 +1187,7 @@ public class IHM3P {
         bt1.setLayoutData(gData);
 
         final Button btnSuppr = new Button(compInscription, SWT.PUSH);
-        btnSuppr.setText("Supprimer une équipe");
+        btnSuppr.setText(SUPPRIMER_UNE_EQUIPE);
         btnSuppr.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -1156,8 +1195,8 @@ public class IHM3P {
                 int index = tableInsc.getSelectionIndex();
                 if (index != -1 && !config.isLockedInsc()) {
                     MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                    dialog.setText("Suppresion équipe");
-                    dialog.setMessage("Etes-vous sur de vouloir supprimer cette équipe" + "\n Cela entraine la modification des numéros des équipes");
+                    dialog.setText(SUPPRESION_EQUIPE);
+                    dialog.setMessage(IHM3P.MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE);
                     int i = dialog.open();
                     if (i == SWT.YES) {
                         supprimerEquipe(index);
@@ -1170,7 +1209,7 @@ public class IHM3P {
                     if (config.isLockedInsc()) {
                         MessageBox dialog = new MessageBox(fenetre, SWT.OK);
                         dialog.setText(TexteIHM.Titre.ATTENTION);
-                        dialog.setMessage("Les inscriptions sont verrouillées");
+                        dialog.setMessage(MESSAGE_INSCRIPTION_VERROUILLEES);
                         dialog.open();
                     }
                 }
@@ -1186,11 +1225,11 @@ public class IHM3P {
 
         final Button btLock = new Button(compInscription, SWT.PUSH);
         if (config.isLockedInsc()) {
-            btLock.setText("Déverrouiller l'inscription");
+            btLock.setText(DEVERROUILLER_INSCRIPTION);
             bt1.setEnabled(false);
             btnSuppr.setEnabled(false);
         } else {
-            btLock.setText("Verrouiller l'inscription");
+            btLock.setText(VERROUILLER_INSCRIPTION);
             bt1.setEnabled(true);
             btnSuppr.setEnabled(true);
         }
@@ -1209,34 +1248,34 @@ public class IHM3P {
                                 config.setLockedInsc(false);
                                 bt1.setEnabled(true);
                                 btnSuppr.setEnabled(true);
-                                btLock.setText("Verrouiller l'inscription");
+                                btLock.setText(VERROUILLER_INSCRIPTION);
 
                             } else {
-                                ouvrirDialogueTexte("Tournoi commencé", "Des scores ont déjà été saisie, cela signifie que le tournoi a commencé. " + "\nVous ne pouvez plus ajouter ou supprimer d'équipe", fenetre, SWT.OK);
+                                ouvrirDialogueTexte(TOURNOI_COMMENCE, MESSAGE_TOURNOI_COMMENCE, fenetre, SWT.OK);
 
                             }
                         } else {
                             config.setLockedInsc(true);
                             bt1.setEnabled(false);
                             btnSuppr.setEnabled(false);
-                            btLock.setText("Déverrouiller l'inscription");
+                            btLock.setText(DEVERROUILLER_INSCRIPTION);
                         }
 
                     } else {
                         config.setLockedInsc(false);
                         bt1.setEnabled(true);
                         btnSuppr.setEnabled(true);
-                        btLock.setText("Verrouiller l'inscription");
+                        btLock.setText(VERROUILLER_INSCRIPTION);
 
                         MessageBox dialog = new MessageBox(fenetre, SWT.OK);
                         dialog.setText(TexteIHM.Titre.ATTENTION);
-                        dialog.setMessage("Le nombre d'équipe est impair\n Veuillez rajouter ou enlevez une équipe");
+                        dialog.setMessage(MESSAGE_NOMBRE_EQUIPE_IMPAIR);
                         dialog.open();
                     }
                 } else {
                     MessageBox dialog = new MessageBox(fenetre, SWT.OK);
                     dialog.setText(TexteIHM.Titre.ATTENTION);
-                    dialog.setMessage("Nombre d'équipes inscrite insuffisante");
+                    dialog.setMessage(NOMBRE_EQUIPES_INSCRITE_INSUFFISANTE);
                     dialog.open();
                 }
 
@@ -1258,7 +1297,7 @@ public class IHM3P {
         Menu mClicDroit = new Menu(fenetre, SWT.POP_UP);
 
         MenuItem miSuppr = new MenuItem(mClicDroit, SWT.CASCADE);
-        miSuppr.setText("Supprimer");
+        miSuppr.setText(TexteIHM.SUPPRIMER);
         miSuppr.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -1266,8 +1305,8 @@ public class IHM3P {
                 int index;
                 if ((index = tableInsc.getSelectionIndex()) != -1 && config.isLockedInsc()) {
                     MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                    dialog.setText("Suppresion équipe");
-                    dialog.setMessage("Etes-vous sur de vouloir supprimer cette équipe" + "\n Cela entraine la modification des numéros des équipes");
+                    dialog.setText(SUPPRESION_EQUIPE);
+                    dialog.setMessage(MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE);
                     int i = dialog.open();
                     if (i == SWT.YES) {
                         supprimerEquipe(index);
@@ -1303,10 +1342,10 @@ public class IHM3P {
             TabFolder ongSubTour = new TabFolder(onglet, SWT.None);
 
             TabItem ongRencTour = new TabItem(ongSubTour, 0);
-            ongRencTour.setText("Rencontres");
+            ongRencTour.setText(TexteIHM.RENCONTRES);
 
             TabItem ongScoreTour = new TabItem(ongSubTour, 0);
-            ongScoreTour.setText("Scores");
+            ongScoreTour.setText(TexteIHM.SCORES);
 
             ongletPrincipaux.get(i + 1).setControl(ongSubTour);
 
@@ -1318,19 +1357,19 @@ public class IHM3P {
 
             // Titres des tableaux
             Label labRencontre = new Label(compRencTour, 0);
-            labRencontre.setText("Tableau des rencontres");
+            labRencontre.setText(TABLEAU_DES_RENCONTRES);
             gData = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 4);
             labRencontre.setLayoutData(gData);
 
             // Table rencontre
             ArrayList<String[]> columsRencontre = new ArrayList<>();
-            columsRencontre.add(new String[]{"N°", "35"});
-            columsRencontre.add(new String[]{"Noms", "250"});
-            columsRencontre.add(new String[]{"", "10"});
-            columsRencontre.add(new String[]{"N°", "35"});
-            columsRencontre.add(new String[]{"Noms", "250"});
-            columsRencontre.add(new String[]{"Epreuves", "250"});
-            columsRencontre.add(new String[]{"N° Terrain", "100"});
+            columsRencontre.add(new String[]{NUMERO, "35"});
+            columsRencontre.add(new String[]{TexteIHM.NOMS, "250"});
+            columsRencontre.add(new String[]{TexteIHM.CHAINE_VIDE, "10"});
+            columsRencontre.add(new String[]{NUMERO, "35"});
+            columsRencontre.add(new String[]{TexteIHM.NOMS, "250"});
+            columsRencontre.add(new String[]{TexteIHM.EPREUVES, "250"});
+            columsRencontre.add(new String[]{NUMERO_TERRAIN, "100"});
 
             final Table tableRenc = creerTable(compRencTour, columsRencontre);
             tablesRenc.add(tableRenc);
@@ -1339,7 +1378,7 @@ public class IHM3P {
             Composite compositeRadioFeuilleMarque = new Composite(compRencTour, SWT.BORDER);
 
             Button btImprimer1 = new Button(compositeRadioFeuilleMarque, SWT.PUSH);
-            btImprimer1.setText("Imprimer\n Feuille de Marque");
+            btImprimer1.setText(IMPRIMER_FEUILLE_DE_MARQUE);
             gData = new GridData(SWT.CENTER, SWT.TOP, false, false, 2, 1);
             gData.widthHint = 200;
 
@@ -1355,8 +1394,8 @@ public class IHM3P {
                         pdf.createPdfFeuilleMarque(finalIndex + 1, listRenc, epreuves);
                     } else {
                         MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                        dialog.setText("Informations");
-                        dialog.setMessage("La liste des rencontres est vide");
+                        dialog.setText(TexteIHM.INFORMATIONS);
+                        dialog.setMessage(MESSAGE_LISTE_RENCONTRE_VIDE);
                         dialog.open();
                     }
 
@@ -1396,7 +1435,7 @@ public class IHM3P {
             });
 
             Label labelFeuilleParEquipe = new Label(compositeRadioFeuilleMarque, SWT.LEFT);
-            labelFeuilleParEquipe.setText("Une feuille par équipe");
+            labelFeuilleParEquipe.setText(UNE_FEUILLE_PAR_EQUIPE);
             gData = new GridData(SWT.LEFT, SWT.TOP, false, false);
             labelFeuilleParEquipe.setLayoutData(gData);
 
@@ -1426,12 +1465,12 @@ public class IHM3P {
             });
 
             Label labelFeuilleParRencontre = new Label(compositeRadioFeuilleMarque, SWT.LEFT);
-            labelFeuilleParRencontre.setText("Une feuille par rencontre");
+            labelFeuilleParRencontre.setText(UNE_FEUILLE_PAR_RENCONTRE);
             gData = new GridData(SWT.LEFT, SWT.TOP, false, false);
             labelFeuilleParRencontre.setLayoutData(gData);
 
             Button btImprimer2 = new Button(compRencTour, SWT.PUSH);
-            btImprimer2.setText("Imprimer\n Feuille Rencontre");
+            btImprimer2.setText(IMPRIMER_FEUILLE_RENCONTRE);
             gData = new GridData(SWT.FILL, SWT.FILL, false, false);
             //gData.widthHint = 200;
             btImprimer2.setLayoutData(gData);
@@ -1446,8 +1485,8 @@ public class IHM3P {
                         pdf.createPdfRencontre(finalIndex + 1, tableRenc);
                     } else {
                         MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                        dialog.setText("Informations");
-                        dialog.setMessage("La liste des rencontres est vide");
+                        dialog.setText(TexteIHM.INFORMATIONS);
+                        dialog.setMessage(MESSAGE_LISTE_RENCONTRE_VIDE);
                         dialog.open();
                     }
 
@@ -1466,17 +1505,17 @@ public class IHM3P {
             compScoreTour.setLayout(gridL);
 
             Label labScore = new Label(compScoreTour, 0);
-            labScore.setText("Tableau des scores");
+            labScore.setText(TABLEAU_DES_SCORES);
             gData = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1);
             labScore.setLayoutData(gData);
 
             // Table Score
             ArrayList<String[]> columsScore = new ArrayList<>();
-            columsScore.add(new String[]{"N°", "35"});
+            columsScore.add(new String[]{NUMERO, "35"});
             for (Epreuve epr : epreuves) {
                 columsScore.add(new String[]{epr.getNom(), "125"});
             }
-            columsScore.add(new String[]{"Epreuves Gagnees", "100"});
+            columsScore.add(new String[]{IHM3P.EPREUVES_GAGNEES, "100"});
 
             final Table tableScore = creerTable(compScoreTour, columsScore);
             tablesScore.add(tableScore);
@@ -1519,7 +1558,7 @@ public class IHM3P {
 
                                 }
                             } else {
-                                ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, "L'équipe n'a pas d'adversaire pour ce tour.", fenetre, SWT.OK);
+                                ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_ERREUR_EQUIPE_SEULE, fenetre, SWT.OK);
 
                             }
 
@@ -1528,9 +1567,9 @@ public class IHM3P {
                         MessageBox msgBox = new MessageBox(fenetre, SWT.OK);
                         msgBox.setText(TexteIHM.Titre.ERREUR);
                         if (config.getTourFini()[finalIndex]) {
-                            msgBox.setMessage("Le tour est fini, vous ne pouvez plus modifier les scores.");
+                            msgBox.setMessage(MESSAGE_TOUR_FINI_VERROUILLAGE_SCORE);
                         } else {
-                            msgBox.setMessage("Le tour précédent n'est pas fini. Assurez-vous qu'il est verrouillé.");
+                            msgBox.setMessage(MESSAGE_TOUR_PRECEDENT_NON_FINI);
                         }
                         msgBox.open();
                     }
@@ -1538,7 +1577,7 @@ public class IHM3P {
             });
 
             Button btImprimerScore = new Button(compScoreTour, SWT.PUSH);
-            btImprimerScore.setText("Imprimer\n Score Tour");
+            btImprimerScore.setText(IMPRIMER_SCORE_TOUR);
             gData = new GridData(SWT.CENTER, SWT.TOP, false, false);
             gData.widthHint = 200;
             btImprimerScore.setLayoutData(gData);
@@ -1558,10 +1597,10 @@ public class IHM3P {
 
             final Button btVerrouillerTour = new Button(compScoreTour, SWT.PUSH);
             if (config.getTourFini()[finalIndex]) {
-                btVerrouillerTour.setText("Tour verrouillé");
+                btVerrouillerTour.setText(TOUR_VERROUILLE);
                 btVerrouillerTour.setEnabled(false);
             } else {
-                btVerrouillerTour.setText("Verrouiller le tour");
+                btVerrouillerTour.setText(VERROUILLER_LE_TOUR);
             }
             gData = new GridData(SWT.CENTER, SWT.TOP, false, false);
             gData.widthHint = 200;
@@ -1573,16 +1612,16 @@ public class IHM3P {
                     if (Equipe.tourFini(equipes, epreuves.size(), finalIndex)) {
                         MessageBox msgBox = new MessageBox(fenetre, SWT.YES | SWT.NO);
                         msgBox.setText(TexteIHM.Titre.ATTENTION);
-                        msgBox.setMessage("Êtes-vous sûre de vouloir verrouiller le tour ? Les scores ne seront plus modifiables après.");
+                        msgBox.setMessage(MESSAGE_CONFIRMATION_VERROUILLAGE_TOUR);
                         int result = msgBox.open();
 
                         if (result == SWT.YES) {
                             config.getTourFini()[finalIndex] = true;
-                            btVerrouillerTour.setText("Tour verrouillé");
+                            btVerrouillerTour.setText(TOUR_VERROUILLE);
                             btVerrouillerTour.setEnabled(false);
                         }
                     } else {
-                        ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, "Le tour n'est pas fini.", fenetre, SWT.OK);
+                        ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_TOUR_NON_FINI, fenetre, SWT.OK);
 
                     }
 
@@ -1606,9 +1645,9 @@ public class IHM3P {
         for (int i = 0; i < config.getNbTour(); i++) {
             TabItem ongSubClass = new TabItem(ongSubClas, 0);
             if (i != config.getNbTour() - 1) {
-                ongSubClass.setText("Tour " + (i + 1));
+                ongSubClass.setText(TOUR_ESPACE + (i + 1));
             } else {
-                ongSubClass.setText("Tour " + (i + 1) + " / Final");
+                ongSubClass.setText(TOUR_ESPACE + (i + 1) + " / Final");
             }
             ongletClassement.add(ongSubClass);
         }
@@ -1616,11 +1655,11 @@ public class IHM3P {
         ongletPrincipaux.get(ongletPrincipaux.size() - 1).setControl(ongSubClas);
 
         ArrayList<String[]> columsClassement = new ArrayList<>();
-        columsClassement.add(new String[]{"N°", "35"});
-        columsClassement.add(new String[]{"Noms des joueurs", "300"});
-        columsClassement.add(new String[]{"Epreuves Gagnées", "140"});
-        columsClassement.add(new String[]{"Score", "75"});
-        columsClassement.add(new String[]{"% Score", "75"});
+        columsClassement.add(new String[]{NUMERO, "35"});
+        columsClassement.add(new String[]{NOMS_DES_JOUEURS, "300"});
+        columsClassement.add(new String[]{EPREUVES_GAGNEES, "140"});
+        columsClassement.add(new String[]{TexteIHM.SCORE, "75"});
+        columsClassement.add(new String[]{POURCENTAGE_SCORE, "75"});
 
         final ArrayList<Table> listTablesClass = new ArrayList<>();
 
@@ -1630,10 +1669,10 @@ public class IHM3P {
             compClass.setLayout(gridL);
 
             if (i == config.getNbTour() - 1) {
-                columsClassement.add(0, new String[]{"Place", "75"});
-                columsClassement.add(1, new String[]{"Place Catégorie", "0"});
-                columsClassement.add(new String[]{"Catégorie", "150"});
-                columsClassement.add(new String[]{"Commentaires", "150"});
+                columsClassement.add(0, new String[]{PLACE, "75"});
+                columsClassement.add(1, new String[]{PLACE_CATEGORIE, "0"});
+                columsClassement.add(new String[]{TexteIHM.CATEGORIE, "150"});
+                columsClassement.add(new String[]{COMMENTAIRES, "150"});
             }
 
             Label labClass = new Label(compClass, SWT.CENTER);
@@ -1651,7 +1690,7 @@ public class IHM3P {
             if (i == config.getNbTour() - 1) {
 
                 Button btImprimer = new Button(compClass, SWT.PUSH);
-                btImprimer.setText("Imprimer");
+                btImprimer.setText(TexteIHM.IMPRIMER);
 
                 gData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
                 btImprimer.setLayoutData(gData);
@@ -1669,18 +1708,18 @@ public class IHM3P {
                 });
 
                 Group grpCat = new Group(compClass, 0);
-                grpCat.setText("Catégorie");
+                grpCat.setText(TexteIHM.CATEGORIE);
                 gridL = new GridLayout(1, false);
                 grpCat.setLayout(gridL);
 
-                String[] categorie = {"Tous", "Homme", "Femme", "Jeune"};
+                String[] categorie = {TexteIHM.TOUS, TexteIHM.HOMME, TexteIHM.FEMME, TexteIHM.JEUNE};
 
                 for (final String string : categorie) {
                     Button radioCat = new Button(grpCat, SWT.RADIO);
                     radioCat.setText(string);
                     radioCat.setSize(100, 10);
 
-                    if ("Tous".equals(string)) {
+                    if (TexteIHM.TOUS.equals(string)) {
                         radioCat.setSelection(true);
                         isCategorie = false;
                     }

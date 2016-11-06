@@ -1,6 +1,6 @@
-package Modele3P;
+package modele;
 
-import Utils.GestTourUtils;
+import utils.GestTourUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;

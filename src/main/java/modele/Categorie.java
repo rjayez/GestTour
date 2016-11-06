@@ -1,4 +1,4 @@
-package Modele3P;
+package modele;
 
 public enum Categorie {
 	Femme,Homme,Jeune,Tous
