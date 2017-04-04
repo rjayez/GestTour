@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Utils.comparator;
+package utils.comparator;
 
-import Modele3P.Epreuve;
-import Modele3P.Equipe;
+import modele.Epreuve;
+import modele.Equipe;
 
 import java.util.Comparator;
 import java.util.List;

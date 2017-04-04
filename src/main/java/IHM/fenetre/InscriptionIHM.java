@@ -1,9 +1,10 @@
-package IHM.fenetre;
+package ihm.fenetre;
 
-import Modele3P.Categorie;
-import Modele3P.Configuration;
-import Modele3P.Equipe;
-import Modele3P.Joueur;
+import constantes.TexteIHM;
+import modele.Categorie;
+import modele.Configuration;
+import modele.Equipe;
+import modele.Joueur;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -13,6 +14,10 @@ import org.eclipse.swt.widgets.*;
 
 public class InscriptionIHM extends Dialog
 {
+
+    public static final String JOUEUR_1 = "Joueur 1";
+    public static final String FEMME_DEUX_POINT = "Femme :";
+    public static final String PRESENT_DEUX_POINT = "Présent :";
 
     private enum catJoueur
     {
@@ -45,7 +50,7 @@ public class InscriptionIHM extends Dialog
         result = new Equipe(equipe);
         Shell parent = getParent();
         Shell fenetre = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-        fenetre.setText("Inscription d'une nouvelle équipe ");
+        fenetre.setText(TexteIHM.INSCRIPTION_UNE_NOUVELLE_EQUIPE);
         fenetre.setSize(350, 150 + 250 * config.getNbJoueurEquipe());
         
         GridLayout gridLay = new GridLayout(5, false);
@@ -101,7 +106,7 @@ public class InscriptionIHM extends Dialog
         @SuppressWarnings("unused")
         Label labTrich = new Label(fenetre, 0);
         Label labelJoueur1 = new Label(fenetre, SWT.CENTER);
-        labelJoueur1.setText("Joueur 1");
+        labelJoueur1.setText(JOUEUR_1);
         gData = new GridData(SWT.CENTER);
         labelJoueur1.setLayoutData(gData);
 
@@ -117,14 +122,14 @@ public class InscriptionIHM extends Dialog
         }
         
         Label labPrenom = new Label(fenetre, SWT.CENTER);
-        labPrenom.setText("Prenom :");
+        labPrenom.setText(TexteIHM.PRENOM_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labPrenom.setLayoutData(gData);
 
         ajouterTextBox(fenetre, joueurs, catJoueur.prenom, 0);
 
         Label labNom = new Label(fenetre, SWT.CENTER);
-        labNom.setText("Nom :");
+        labNom.setText(TexteIHM.NOM_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labNom.setLayoutData(gData);
 
@@ -133,7 +138,7 @@ public class InscriptionIHM extends Dialog
        
 
         Label labVille = new Label(fenetre, SWT.CENTER);
-        labVille.setText("Ville :");
+        labVille.setText(TexteIHM.VILLE_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labVille.setLayoutData(gData);
 
@@ -141,7 +146,7 @@ public class InscriptionIHM extends Dialog
 
         // Partie sélection catégorie homme
         Label labHomme = new Label(fenetre, 0);
-        labHomme.setText("Homme :");
+        labHomme.setText(TexteIHM.HOMME_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labHomme.setLayoutData(gData);
 
@@ -176,7 +181,7 @@ public class InscriptionIHM extends Dialog
 
         // Partie sélection catégorie femme
         Label labFemme = new Label(fenetre, 0);
-        labFemme.setText("Femme :");
+        labFemme.setText(FEMME_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labFemme.setLayoutData(gData);
 
@@ -208,7 +213,7 @@ public class InscriptionIHM extends Dialog
 
         // Partie sélection catégorie jeune
         Label labJeune = new Label(fenetre, 0);
-        labJeune.setText("Jeune :");
+        labJeune.setText(TexteIHM.JEUNE_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labJeune.setLayoutData(gData);
 
@@ -249,12 +254,12 @@ public class InscriptionIHM extends Dialog
         compositePresence.setLayoutData(gData);
         
         Label labelPresence = new Label(compositePresence, 0);
-        labelPresence.setText("Présent :");
+        labelPresence.setText(PRESENT_DEUX_POINT);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         labelPresence.setLayoutData(gData);
         
         Label labelPresenceOui = new Label(compositePresence,0);
-        labelPresenceOui.setText("Oui");
+        labelPresenceOui.setText(TexteIHM.OUI);
         gData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
         labelPresenceOui.setLayoutData(gData);
         
@@ -279,7 +284,7 @@ public class InscriptionIHM extends Dialog
         
        
         Label labelPresenceNon = new Label(compositePresence,0);
-        labelPresenceNon.setText("Non");
+        labelPresenceNon.setText(TexteIHM.NON);
         gData = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
         labelPresenceNon.setLayoutData(gData);
     
@@ -316,7 +321,7 @@ public class InscriptionIHM extends Dialog
 
         listTab[indexTab++] = btOk;
 
-        btOk.setText("OK");
+        btOk.setText(TexteIHM.OK);
         btOk.setSize(100, 10);
         gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 3, 1);
         gData.widthHint = 100;
@@ -343,7 +348,7 @@ public class InscriptionIHM extends Dialog
         listTab[indexTab] = btAnnuler;
 
 
-        btAnnuler.setText("Annuler");
+        btAnnuler.setText(TexteIHM.ANNULER);
         btAnnuler.setSize(100, 10);
         gData = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1);
         gData.widthHint = 100;

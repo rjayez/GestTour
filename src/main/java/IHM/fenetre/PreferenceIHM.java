@@ -1,7 +1,8 @@
-package IHM.fenetre;
+package ihm.fenetre;
 
-import Modele3P.Configuration;
-import Modele3P.Epreuve;
+import constantes.TexteIHM;
+import modele.Configuration;
+import modele.Epreuve;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -15,12 +16,20 @@ import java.util.ArrayList;
 
 public class PreferenceIHM extends Dialog
 {
+	public static final String TARIF_PAR_EQUIPE = "Tarif par \u00E9quipe";
+	public static final String NOMBRES_DE_JOUEURS_PAR_EQUIPE = "Nombres de joueurs par \u00E9quipe";
+	public static final String NOMBRES_DE_TOUR = "Nombres de tour";
+	public static final String AJOUTER_EPREUVE = "Ajouter Epreuve";
+	public static final String MESSAGE_REINITIALISATION = "La modification entraine la r\u00E9initialisation total des scores" + "\n Etes-vous sur ?";
+	public static final String MESSAGE_SCORE_MAX = "Le score maximum doit être sup\u00E9rieur ou \u00E9gale à un";
+	public static final String LA_VALEUR_SAISIE_N_EST_PAS_UN_NOMBRE = "La valeur saisie n'est pas un nombre";
+	public static final String MESSAGE_ERREUR_SUPPRESSION_EPREUVES = "Vous ne pouvez pas supprimer toutes les \u00E9preuves";
 	private boolean isOk;
 	private Configuration result;
 	private final ArrayList<Epreuve> epreuves;
 	
 	/**
-	 * @param args
+	 * @param parent
 	 */
 	public PreferenceIHM(Shell parent)
 	{
@@ -38,7 +47,7 @@ public class PreferenceIHM extends Dialog
 		Shell parent = getParent();
 		Shell fenetre = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		
-		fenetre.setText("Preférences");
+		fenetre.setText(TexteIHM.PREFERENCES);
 		fenetre.setSize(500, 400);
 		GridLayout gridL = new GridLayout(3, false);
 		gridL.horizontalSpacing = 15;
@@ -80,7 +89,7 @@ public class PreferenceIHM extends Dialog
 		GridData gData;
 		
 		Label lab = new Label(fenetre, 0);
-		lab.setText("Tarif par équipe");
+		lab.setText(TARIF_PAR_EQUIPE);
 		gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
 		lab.setLayoutData(gData);
 		
@@ -94,7 +103,7 @@ public class PreferenceIHM extends Dialog
 		tb.addModifyListener(arg0 -> result.setTarif(tb.getText()));
 		
 		lab = new Label(fenetre, 0);
-		lab.setText("Nombres de joueurs par équipe");
+		lab.setText(NOMBRES_DE_JOUEURS_PAR_EQUIPE);
 		gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
 		lab.setLayoutData(gData);
 		
@@ -126,7 +135,7 @@ public class PreferenceIHM extends Dialog
 		cbNbJoueur.setEnabled(false);
 		
 		lab = new Label(fenetre, 0);
-		lab.setText("Nombres de tour");
+		lab.setText(NOMBRES_DE_TOUR);
 		gData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
 		lab.setLayoutData(gData);
 		
@@ -159,7 +168,7 @@ public class PreferenceIHM extends Dialog
 		final Group groupEpreuve = new Group(fenetre, SWT.NONE);
 		groupEpreuve.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		groupEpreuve.setLayout(new GridLayout(3, false));
-		groupEpreuve.setText("Epreuves");
+		groupEpreuve.setText(TexteIHM.EPREUVES);
 		
 		for (Epreuve epr : epreuves)
 		{
@@ -169,7 +178,7 @@ public class PreferenceIHM extends Dialog
 		
 		Button btnAdd = new Button(fenetre, SWT.PUSH);
 		btnAdd.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 3, 1));
-		btnAdd.setText("Ajouter Epreuve");
+		btnAdd.setText(AJOUTER_EPREUVE);
 		btnAdd.addSelectionListener(new SelectionListener()
 		{
 			
@@ -195,9 +204,8 @@ public class PreferenceIHM extends Dialog
 			@Override public void widgetSelected(SelectionEvent arg0)
 			{
 				MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-				dialog.setText("Attention");
-				dialog.setMessage("La modification entraine la réinitialisation total des scores" +
-						"\n Etes-vous sur ?");
+				dialog.setText(TexteIHM.ATTENTION);
+				dialog.setMessage(MESSAGE_REINITIALISATION);
 				int i = dialog.open();
 				if(i == SWT.YES)
 				{
@@ -214,7 +222,7 @@ public class PreferenceIHM extends Dialog
 		
 		Button btnAnnuler = new Button(fenetre, SWT.PUSH);
 		btnAnnuler.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-		btnAnnuler.setText("Annuler");
+		btnAnnuler.setText(TexteIHM.ANNULER);
 		
 		btnAnnuler.addSelectionListener(new SelectionListener()
 		{
@@ -261,8 +269,8 @@ public class PreferenceIHM extends Dialog
 					{
 						
 						MessageBox msgBox = new MessageBox(fenetre);
-						msgBox.setMessage("Le score maximum doit être supérieur ou égale à un");
-						msgBox.setText("Erreur de saisie");
+						msgBox.setMessage(MESSAGE_SCORE_MAX);
+						msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
 						msgBox.open();
 						
 						tbPointEpr.setText("1");
@@ -280,8 +288,8 @@ public class PreferenceIHM extends Dialog
 				{
 					
 					MessageBox msgBox = new MessageBox(fenetre);
-					msgBox.setMessage("La valeur saisie n'est pas un nombre");
-					msgBox.setText("Erreur de saisie");
+					msgBox.setMessage(LA_VALEUR_SAISIE_N_EST_PAS_UN_NOMBRE);
+					msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
 					msgBox.open();
 				}
 				
@@ -311,8 +319,8 @@ public class PreferenceIHM extends Dialog
 				else
 				{
 					MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-					dialog.setText("Attention");
-					dialog.setMessage("Vous ne pouvez pas supprimer toutes les épreuves");
+					dialog.setText(TexteIHM.ATTENTION);
+					dialog.setMessage(MESSAGE_ERREUR_SUPPRESSION_EPREUVES);
 					dialog.open();
 				}
 				
