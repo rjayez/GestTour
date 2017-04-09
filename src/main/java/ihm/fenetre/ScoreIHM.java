@@ -9,7 +9,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
+
 
 public class ScoreIHM extends Dialog {
 
@@ -20,16 +22,16 @@ public class ScoreIHM extends Dialog {
     public static final String MESSAGE_NOT_A_NUMBER = "La valeur saisie n'est pas un nombre";
     public static final String MESSAGE_RAZ_SCORE = "Voulez-vous remettre les scores à z\u00E9ro ?";
 
-    private ArrayList<Epreuve> epreuves;
+    private List<Epreuve> epreuves;
     private Boolean result;
     private Equipe eq1, eq2;
 
-    public ScoreIHM(Shell parent, int style, ArrayList<Epreuve> epreuves) {
+    public ScoreIHM(Shell parent, int style, List<Epreuve> epreuves) {
         super(parent, style);
         this.epreuves = epreuves;
     }
 
-    public ScoreIHM(Shell parent, ArrayList<Epreuve> epreuves) {
+    public ScoreIHM(Shell parent, List<Epreuve> epreuves) {
         this(parent, 0, epreuves);
     }
 

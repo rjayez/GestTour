@@ -8,7 +8,11 @@ import ihm.fenetre.ScoreIHM;
 import modele.*;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,6 +24,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
 
 public class IHM3P {
 
@@ -75,11 +80,12 @@ public class IHM3P {
             "l'int\u00E9gralit\u00E9 " +
             "du tournoi en cours";
     public static final String FIN_FICHIER_OLD_SLR = "_old.slr";
-    private final ArrayList<Equipe> equipes;
+
+    private final List<Equipe> equipes;
     private final Sauvegarde save;
     private final Impression pdf;
     private final Configuration config;
-    private final ArrayList<Epreuve> epreuves;
+    private List<Epreuve> epreuves;
 
     private Table tableInsc;
 
@@ -88,11 +94,11 @@ public class IHM3P {
     // Variable ihm
     private final Shell fenetre;
     private final Display display;
-    private final ArrayList<Table> tablesRenc;
-    private final ArrayList<Table> tablesScore;
-    private ArrayList<Table> listTablesClass;
-    private final ArrayList<TabItem> ongletPrincipaux; // 1 Inscription (index 0) + N Tour (indx n° tour) + 1 Classement (index size -1)
-    private final ArrayList<TabItem> ongletClassement;
+    private final List<Table> tablesRenc;
+    private final List<Table> tablesScore;
+    private List<Table> listTablesClass;
+    private final List<TabItem> ongletPrincipaux; // 1 Inscription (index 0) + N Tour (indx n° tour) + 1 Classement (index size -1)
+    private final List<TabItem> ongletClassement;
     private final TabFolder onglet;
     private Button btnVerrouillerInsc;
     private Button[] tabBtnVerrouillerTour;
@@ -102,7 +108,7 @@ public class IHM3P {
     private GridLayout gridL;
     private GridData gData;
 
-    public IHM3P(ArrayList<Equipe> equipes, Sauvegarde save, ArrayList<Epreuve> epreuves) {
+    public IHM3P(List<Equipe> equipes, Sauvegarde save, List<Epreuve> epreuves) {
         this.equipes = equipes;
         this.save = save;
         this.pdf = Impression.getInstance();
@@ -224,7 +230,7 @@ public class IHM3P {
      * @param columns liste des noms des colonnes de la table
      * @return retourne la table avec les colonnes et options de base
      */
-    private Table creerTable(Composite parent, ArrayList<String[]> columns) {
+    private Table creerTable(Composite parent, List<String[]> columns) {
         Table table = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
 
         // Nom de la colonne puis la largeur
@@ -706,14 +712,15 @@ public class IHM3P {
         tableInsc.deselectAll();
     }
 
-    private void changementConfig() {
-        int nbTour = config.getNbTour();
-        int nbEpreuve = epreuves.size();
+    private void changementConfig(final ConfigTournoi configTournoi) {
+        int nbTour = configTournoi.getNombreTour();
+        int nbEpreuve = configTournoi.getEpreuves().size();
         for (Equipe e : equipes) {
             e.setEquipesJouees(new int[nbTour]);
             e.setPartiesGagnees(new int[nbTour]);
             e.setScores(new int[nbTour][nbEpreuve]);
         }
+        config.setNbEpreuve(nbEpreuve);
         config.setTourFini(new boolean[nbTour]);
         config.setLockedInsc(false);
 
@@ -942,16 +949,16 @@ public class IHM3P {
         });
 
 
-        LinkedList<String> previousFile = config.getPrevFile();
+        LinkedList<String> previousFiles = config.getPrevFile();
 
-        for (final String string : previousFile) {
-            if (StringUtils.isNotBlank(string)) {
+        for (final String previousFile : previousFiles) {
+            if (StringUtils.isNotBlank(previousFile)) {
                 MenuItem miFicherRecent = new MenuItem(menuFichier, SWT.CASCADE);
                 String fichier;
-                if (string.lastIndexOf(SLASH) != -1) {
-                    fichier = string.substring(string.lastIndexOf(SLASH));
+                if (previousFile.lastIndexOf(SLASH) != -1) {
+                    fichier = previousFile.substring(previousFile.lastIndexOf(SLASH));
                 } else {
-                    fichier = string;
+                    fichier = previousFile;
                 }
 
                 miFicherRecent.setText(fichier);
@@ -959,8 +966,8 @@ public class IHM3P {
 
                     @Override
                     public void widgetSelected(SelectionEvent arg0) {
-                        save.openSaveFile(string, equipes, epreuves);
-                        config.fichierRecent(string);
+                        save.openSaveFile(previousFile, equipes, epreuves);
+                        config.fichierRecent(previousFile);
 
                         resetAffichage();
                         createContents();
@@ -1019,10 +1026,10 @@ public class IHM3P {
             public void widgetSelected(SelectionEvent arg0) {
                 PreferenceIHM prefIHM = new PreferenceIHM(fenetre);
 
-                boolean isOk = prefIHM.open(config, epreuves);
-                if (isOk) {
-                    changementConfig();
-
+                ConfigTournoi result = prefIHM.open(config, epreuves);
+                if (result != null) {
+                    changementConfig(result);
+                    epreuves = result.getEpreuves();
                     resetAffichage();
                     createContents();
                     initAffichage(tableInsc);
@@ -1066,9 +1073,9 @@ public class IHM3P {
         fenetre.setMenuBar(menu);
     }
 
-    private ArrayList<String[]> getListeRencontre(int indexTour, Table tableRencontre, boolean uneFeuilleParEquipe) {
+    private List<String[]> getListeRencontre(int indexTour, Table tableRencontre, boolean uneFeuilleParEquipe) {
         Equipe.ordonnerEquipe(equipes);
-        ArrayList<String[]> listRenc = new ArrayList<>();
+        List<String[]> listRenc = new ArrayList<>();
 
 
         for (TableItem item : tableRencontre.getItems()) {
@@ -1389,7 +1396,7 @@ public class IHM3P {
                 @Override
                 public void widgetSelected(SelectionEvent arg0) {
 
-                    ArrayList<String[]> listRenc = getListeRencontre(finalIndex, tableRenc, uneFeuilleMarqueParEquipe);
+                    List<String[]> listRenc = getListeRencontre(finalIndex, tableRenc, uneFeuilleMarqueParEquipe);
                     if (listRenc.size() > 0) {
                         pdf.createPdfFeuilleMarque(finalIndex + 1, listRenc, epreuves);
                     } else {
@@ -1480,7 +1487,7 @@ public class IHM3P {
                 @Override
                 public void widgetSelected(SelectionEvent arg0) {
 
-                    ArrayList<String[]> listRenc = getListeRencontre(finalIndex, tableRenc, true);
+                    List<String[]> listRenc = getListeRencontre(finalIndex, tableRenc, true);
                     if (listRenc.size() > 0) {
                         pdf.createPdfRencontre(finalIndex + 1, tableRenc);
                     } else {
@@ -1654,14 +1661,14 @@ public class IHM3P {
 
         ongletPrincipaux.get(ongletPrincipaux.size() - 1).setControl(ongSubClas);
 
-        ArrayList<String[]> columsClassement = new ArrayList<>();
+        List<String[]> columsClassement = new ArrayList<>();
         columsClassement.add(new String[]{NUMERO, "35"});
         columsClassement.add(new String[]{NOMS_DES_JOUEURS, "300"});
         columsClassement.add(new String[]{EPREUVES_GAGNEES, "140"});
         columsClassement.add(new String[]{TexteIHM.SCORE, "75"});
         columsClassement.add(new String[]{POURCENTAGE_SCORE, "75"});
 
-        final ArrayList<Table> listTablesClass = new ArrayList<>();
+        final List<Table> listTablesClass = new ArrayList<>();
 
         for (int i = 0; i < config.getNbTour(); i++) {
 

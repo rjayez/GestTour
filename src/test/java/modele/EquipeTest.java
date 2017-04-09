@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -28,7 +29,7 @@ public class EquipeTest
     public void testGetScoreTotalPondere()
     {
         System.out.println("getScoreTotalPondere");
-        ArrayList<Epreuve> epreuves = new ArrayList<>();
+        List<Epreuve> epreuves = new ArrayList<>();
         
         Epreuve ep1 = new Epreuve("ep1", 10);
         Epreuve ep2 = new Epreuve("ep2", 11);

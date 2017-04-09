@@ -1,6 +1,7 @@
 package ihm.fenetre;
 
 import constantes.TexteIHM;
+import modele.ConfigTournoi;
 import modele.Configuration;
 import modele.Epreuve;
 import org.eclipse.swt.SWT;
@@ -11,8 +12,10 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import utils.GestTourUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PreferenceIHM extends Dialog
 {
@@ -24,26 +27,26 @@ public class PreferenceIHM extends Dialog
 	public static final String MESSAGE_SCORE_MAX = "Le score maximum doit être sup\u00E9rieur ou \u00E9gale à un";
 	public static final String LA_VALEUR_SAISIE_N_EST_PAS_UN_NOMBRE = "La valeur saisie n'est pas un nombre";
 	public static final String MESSAGE_ERREUR_SUPPRESSION_EPREUVES = "Vous ne pouvez pas supprimer toutes les \u00E9preuves";
+
 	private boolean isOk;
-	private Configuration result;
-	private final ArrayList<Epreuve> epreuves;
+	private List<Epreuve> epreuves;
+	private ConfigTournoi configTournoi;
 	
 	/**
 	 * @param parent
 	 */
-	public PreferenceIHM(Shell parent)
+	public PreferenceIHM(final Shell parent)
 	{
 		super(parent, 0);
-		result = Configuration.getInstance();
 		epreuves = new ArrayList<>();
+		configTournoi = new ConfigTournoi();
 	}
 	
-	public boolean open(Configuration config, ArrayList<Epreuve> epreuves)
+	public ConfigTournoi open(final Configuration config, final List<Epreuve> epreuves)
 	{
-		result = config;
-		this.epreuves.clear();
-		this.epreuves.addAll(epreuves);
-		
+        this.epreuves = GestTourUtils.copyEpreuves(epreuves); // deep copy
+
+
 		Shell parent = getParent();
 		Shell fenetre = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		
@@ -55,7 +58,7 @@ public class PreferenceIHM extends Dialog
 		
 		fenetre.setLayout(gridL);
 		
-		createContents(fenetre, epreuves);
+		createContents(fenetre, epreuves, config);
 		
 		fenetre.pack();
 		fenetre.open();
@@ -70,21 +73,17 @@ public class PreferenceIHM extends Dialog
 		}
 		
 		if (isOk)
-		{	
-			epreuves.clear();
-			epreuves.addAll(this.epreuves);
-			config.setNbEpreuve(epreuves.size());
-			config = result;
-			return true;
+		{
+			return configTournoi;
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 		
 	}
 	
-	private void createContents(final Shell fenetre, final ArrayList<Epreuve> epreuves)
+	private void createContents(final Shell fenetre, final List<Epreuve> epreuves, final Configuration configuration)
 	{
 		GridData gData;
 		
@@ -94,13 +93,13 @@ public class PreferenceIHM extends Dialog
 		lab.setLayoutData(gData);
 		
 		final Text tb = new Text(fenetre, 0);
-		tb.setText(result.getTarif());
+		tb.setText(configuration.getTarif());
 		tb.setSize(200, 10);
 		gData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		gData.widthHint = 75;
 		tb.setLayoutData(gData);
 		
-		tb.addModifyListener(arg0 -> result.setTarif(tb.getText()));
+		tb.addModifyListener(arg0 -> configTournoi.setTarif(tb.getText()));
 		
 		lab = new Label(fenetre, 0);
 		lab.setText(NOMBRES_DE_JOUEURS_PAR_EQUIPE);
@@ -117,7 +116,7 @@ public class PreferenceIHM extends Dialog
 		{
 			cbNbJoueur.add(Integer.toString(i));
 		}
-		cbNbJoueur.select(result.getNbJoueurEquipe() - 1);
+		cbNbJoueur.select(configuration.getNbJoueurEquipe() - 1);
 		
 		cbNbJoueur.addSelectionListener(new SelectionListener()
 		{
@@ -125,7 +124,7 @@ public class PreferenceIHM extends Dialog
 			@Override public void widgetSelected(SelectionEvent arg0)
 			{
 				// TODO Proposer la possibilité de mettre un nom d'équipes (ou demander dans la case d'inscription)
-				result.setNbJoueurEquipe(cbNbJoueur.getSelectionIndex() + 1);
+				configTournoi.setNombreTour(cbNbJoueur.getSelectionIndex() + 1);
 			}
 			
 			@Override public void widgetDefaultSelected(SelectionEvent arg0)
@@ -146,7 +145,7 @@ public class PreferenceIHM extends Dialog
 		{
 			cbNbTour.add(Integer.toString(i));
 		}
-		cbNbTour.select(result.getNbTour() - 1);
+		cbNbTour.select(configuration.getNbTour() - 1);
 		gData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		gData.widthHint = 75;
 		cbNbTour.setLayoutData(gData);
@@ -156,8 +155,7 @@ public class PreferenceIHM extends Dialog
 			
 			@Override public void widgetSelected(SelectionEvent arg0)
 			{
-				result.setNbTour(cbNbTour.getSelectionIndex() + 1);
-				
+				configTournoi.setNombreTour(cbNbTour.getSelectionIndex() + 1);
 			}
 			
 			@Override public void widgetDefaultSelected(SelectionEvent arg0)
@@ -173,7 +171,6 @@ public class PreferenceIHM extends Dialog
 		for (Epreuve epr : epreuves)
 		{
 			createInfoEpreuve(fenetre, groupEpreuve, epr);
-			
 		}
 		
 		Button btnAdd = new Button(fenetre, SWT.PUSH);
@@ -185,7 +182,7 @@ public class PreferenceIHM extends Dialog
 			@Override public void widgetSelected(SelectionEvent arg0)
 			{
 				Epreuve epr = new Epreuve();
-				PreferenceIHM.this.epreuves.add(epr);				
+				epreuves.add(epr);
 				createInfoEpreuve(fenetre, groupEpreuve, epr);
 				fenetre.pack();
 			}
@@ -211,9 +208,7 @@ public class PreferenceIHM extends Dialog
 				{
 					isOk = true;
 					fenetre.close();
-					
 				}
-				
 			}
 			
 			@Override public void widgetDefaultSelected(SelectionEvent arg0)
@@ -307,7 +302,7 @@ public class PreferenceIHM extends Dialog
 			
 			@Override public void widgetSelected(SelectionEvent arg0)
 			{
-				if(epreuves.size()>1)
+				if(epreuves.size() > 1)
 				{
 					epreuves.remove(epr);
 					tbNomEpr.dispose();
@@ -330,4 +325,6 @@ public class PreferenceIHM extends Dialog
 			{}
 		});
 	}
+
+
 }

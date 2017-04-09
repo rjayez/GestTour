@@ -72,7 +72,7 @@ public class Equipe
         this(0, Categorie.Homme, config);
     }
 
-    public static void ordonnerEquipe(ArrayList<Equipe> listEq)
+    public static void ordonnerEquipe(List<Equipe> listEq)
     {
         Collections.sort(listEq, new ComparateurEquipeNum());
     }
@@ -111,7 +111,7 @@ public class Equipe
 
 
 
-    public static boolean aScoreSaisie (ArrayList<Equipe> listEquipes)
+    public static boolean aScoreSaisie (List<Equipe> listEquipes)
     {
         for (Equipe equipe : listEquipes)
             {
@@ -128,7 +128,7 @@ public class Equipe
         return false;
     }
     
-    public static boolean tourFini(ArrayList<Equipe> equipes, int nbEpreuve, int indexTour)
+    public static boolean tourFini(List<Equipe> equipes, int nbEpreuve, int indexTour)
     {
         if (!equipes.isEmpty())
         {
@@ -152,7 +152,7 @@ public class Equipe
      *
      * @param equipes
      */
-    public static void effacerScore(ArrayList<Equipe> equipes)
+    public static void effacerScore(List<Equipe> equipes)
     {
         if (!equipes.isEmpty())
         {
@@ -249,7 +249,7 @@ public class Equipe
      * @param epreuves
      * @return 
      */
-    public Integer getScoreTotalPondere(final ArrayList<Epreuve> epreuves)
+    public Integer getScoreTotalPondere(final List<Epreuve> epreuves)
     {
         return getScoreTotalTourPondere(epreuves, scores.length-1);
     }

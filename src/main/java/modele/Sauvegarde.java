@@ -35,7 +35,7 @@ public class Sauvegarde
 	private Sauvegarde()
 	{}
 	
-	public void openSaveFile(String fichier, ArrayList<Equipe> equipes, ArrayList<Epreuve> epreuves)
+	public void openSaveFile(String fichier, List<Equipe> equipes, List<Epreuve> epreuves)
 	{
 
         config = Configuration.getInstance();
@@ -180,18 +180,18 @@ public class Sauvegarde
 			catch (Exception e)
 			{
 				
-				defaultConfig(equipes, epreuves);
+				defaultConfig(epreuves);
 				e.printStackTrace();
 			}
 		}
 		else
 		{
-			defaultConfig(equipes, epreuves);
+			defaultConfig(epreuves);
 		}
 		
 	}
 	
-	public void enregistrer(String fichier, ArrayList<Equipe> equipes, ArrayList<Epreuve> epreuves)
+	public void enregistrer(String fichier, List<Equipe> equipes, List<Epreuve> epreuves)
 	{
 
 		racine = new Element(TexteIHM.CONFIGURATION);
@@ -324,7 +324,7 @@ public class Sauvegarde
 		
 	}
 	
-	public void defaultConfig(ArrayList<Equipe> equipes, ArrayList<Epreuve> epreuves)
+	public void defaultConfig(List<Epreuve> epreuves)
 	{
 		config = Configuration.getInstance();
 		

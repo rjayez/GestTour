@@ -66,7 +66,7 @@ public class Impression {
     }
 
     //TODO Ajouter le nom du fichier de tournoi dans le nom du pdf crée
-    public void createPdfFeuilleMarque(int numeroTour, ArrayList<String[]> listRenc, ArrayList<Epreuve> epreuves) {
+    public void createPdfFeuilleMarque(int numeroTour, List<String[]> listRenc, List<Epreuve> epreuves) {
         //TODO Gerer l'affichage selon le nombre d'epreuve
         Document doc = new Document(PageSize.A4.rotate(), 1, 1, 15, 15);
         try {
@@ -128,7 +128,7 @@ public class Impression {
      * @param epreuves liste des epreuves
      * @return renvoie une PdfPTable avec une feuille de marque de construite
      */
-    private PdfPTable createTableFeuilleMarque(String[] strRenc, ArrayList<Epreuve> epreuves) throws DocumentException {
+    private PdfPTable createTableFeuilleMarque(String[] strRenc, List<Epreuve> epreuves) throws DocumentException {
 
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(95);
@@ -363,7 +363,7 @@ public class Impression {
         return pdfTable;
     }
 
-    public void createPdfScoreTour(Table table, ArrayList<String[]> listRenc, int indexTour) {
+    public void createPdfScoreTour(Table table, List<String[]> listRenc, int indexTour) {
         Document doc = new Document(PageSize.A4, 1, 1, 1, 1);
         try {
             String complementTitrePdf = GestTourUtils.getNomFichierSansExtension(config.getSaveFile());
@@ -383,7 +383,7 @@ public class Impression {
     }
 
     //TODO Gérer selon le nombre d'épreuve
-    private PdfPTable createTableScoreTour(Table table, ArrayList<String[]> listRenc) throws DocumentException {
+    private PdfPTable createTableScoreTour(Table table, List<String[]> listRenc) throws DocumentException {
         TableItem[] items = table.getItems();
         TableColumn[] columns = table.getColumns();
         int nbColonne = columns.length * 2;

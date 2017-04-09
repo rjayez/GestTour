@@ -7,11 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Tournoi
 {
 
-    private static ArrayList<Epreuve> epreuves;
+    private static List<Epreuve> epreuves;
     private static Sauvegarde sauvegarde;
     private static Configuration config;
     private static Impression impression;
@@ -51,7 +52,7 @@ public class Tournoi
                     }
                     else
                     {
-                        sauvegarde.defaultConfig(equipes, epreuves);
+                        sauvegarde.defaultConfig(epreuves);
                     }
                 }
 
