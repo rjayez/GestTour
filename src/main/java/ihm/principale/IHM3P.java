@@ -1,7 +1,7 @@
 package ihm.principale;
 
 import constantes.TexteIHM;
-import ihm.fenetre.InscriptionIHM;
+import ihm.fenetre.InscriptionEquipeIHM;
 import ihm.fenetre.NouveauIHM;
 import ihm.fenetre.PreferenceIHM;
 import ihm.fenetre.ScoreIHM;
@@ -681,7 +681,7 @@ public class IHM3P {
      */
     private void ajoutModifEquipe(final Table tableInsc) {
 
-        InscriptionIHM inscriptionDialogue = new InscriptionIHM(fenetre, config);
+        InscriptionEquipeIHM inscriptionDialogue = new InscriptionEquipeIHM(fenetre, config);
         int index = tableInsc.getSelectionIndex();
         // Si la ligne selectionné n'est pas une équipe déjà inscrite => nouvelle inscripion
         if (-1 == index) {
@@ -1551,7 +1551,6 @@ public class IHM3P {
                                 }
                             } else {
                                 InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_ERREUR_EQUIPE_SEULE, fenetre, SWT.OK);
-
                             }
 
                         }

@@ -12,7 +12,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-public class InscriptionIHM extends Dialog
+public class InscriptionEquipeIHM extends Dialog
 {
 
     public static final String JOUEUR_1 = "Joueur 1";
@@ -30,17 +30,16 @@ public class InscriptionIHM extends Dialog
     private Equipe result;
     private boolean exitWithOk;
 
-    public InscriptionIHM(Shell parent, int style, Configuration config)
+    public InscriptionEquipeIHM(Shell parent, int style, Configuration config)
     {
         super(parent, style);
         this.config = config;
         this.exitWithOk = false;
         int nbTab = 5 + 3 * config.getNbJoueurEquipe();
         listTab = new Control[nbTab];
-        //result = new Equipe(config);
     }
 
-    public InscriptionIHM(Shell parent, Configuration config)
+    public InscriptionEquipeIHM(Shell parent, Configuration config)
     {
         this(parent, 0, config);
     }
@@ -77,7 +76,6 @@ public class InscriptionIHM extends Dialog
             {
                 display.sleep();
             }
-
         }
 
         return result;

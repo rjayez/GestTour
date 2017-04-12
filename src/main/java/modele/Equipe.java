@@ -1,5 +1,6 @@
 package modele;
 
+import lombok.Data;
 import utils.comparator.ComparatorEquipeScorePondere;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Data
 public class Equipe
 {
 
@@ -105,12 +107,6 @@ public class Equipe
         }
     }
 
-
-
-
-
-
-
     public static boolean aScoreSaisie (List<Equipe> listEquipes)
     {
         for (Equipe equipe : listEquipes)
@@ -191,34 +187,10 @@ public class Equipe
         return nomJoueur;
     }
 
-    public Joueur[] getJoueurs()
-    {
-        return joueurs;
-    }
-
-    public int getNumero()
-    {
-        return numero;
-    }
 
     public String getNumeroStr()
     {
         return Integer.toString(numero);
-    }
-
-    public void setNumero(int numero)
-    {
-        this.numero = numero;
-    }
-
-    public void setJoueurs(Joueur[] joueurs)
-    {
-        this.joueurs = joueurs;
-    }
-
-    public int[][] getScores()
-    {
-        return scores;
     }
 
     public String getScores(int indexTour, int indexEpr)
@@ -281,9 +253,6 @@ public class Equipe
         return scoreTot;
     }
 
-
-
-   
     
     /**
      * Fais la somme du score de l'équipe jusqu'au tour mentionner (SI
@@ -325,29 +294,10 @@ public class Equipe
         return somme;
     }
 
-    public void setScores(int[][] scores)
-    {
-        this.scores = scores;
-    }
 
     public void setScores(int indexTour, int indexEpreuve, int score)
     {
         this.scores[indexTour][indexEpreuve] = score;
-    }
-
-    public Categorie getCategorie()
-    {
-        return categorie;
-    }
-
-    public void setCategorie(Categorie categorie)
-    {
-        this.categorie = categorie;
-    }
-
-    public int[] getPartiesGagnees()
-    {
-        return partiesGagnees;
     }
 
 
@@ -375,24 +325,9 @@ public class Equipe
         return total;
     }
 
-    public void setPartiesGagnees(int[] partiesGagnees)
-    {
-        this.partiesGagnees = partiesGagnees;
-    }
-
     public void setPartieGagnee(int indexTour, int nbPartieGagne)
     {
         this.partiesGagnees[indexTour] = nbPartieGagne;
-    }
-
-    public int[] getEquipesJouees()
-    {
-        return equipesJouees;
-    }
-
-    public void setEquipesJouees(int[] equipesJouees)
-    {
-        this.equipesJouees = equipesJouees;
     }
 
     public void setEquipeJouee(int indexTour, int numEquipe)
@@ -400,20 +335,7 @@ public class Equipe
         this.equipesJouees[indexTour] = numEquipe;
     }
 
-    /**
-     * @return the present
-     */
-    public boolean isPresent()
-    {
-        return present;
-    }
 
-    /**
-     * @param present the present to set
-     */
-    public void setPresent(boolean present)
-    {
-        this.present = present;
-    }
+
 
 }

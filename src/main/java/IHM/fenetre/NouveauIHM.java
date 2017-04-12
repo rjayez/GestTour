@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
+import utils.InterfaceUtils;
 
 import java.io.File;
 import java.util.List;
@@ -134,19 +135,13 @@ public class NouveauIHM extends Dialog
                     }
                     else
                     {
-                        MessageBox dialog = new MessageBox(shell, SWT.OK);
-                        dialog.setText(TexteIHM.ATTENTION);
-                        dialog.setMessage(FICHIER_DEJA_EXISTANT);
-                        dialog.open();
+						InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION, FICHIER_DEJA_EXISTANT, shell, SWT.OK);
                     }
 					
 				}
 				else
 				{
-					MessageBox dialog = new MessageBox(shell, SWT.OK);
-					dialog.setText(TexteIHM.ATTENTION);
-					dialog.setMessage(MESSAGE_TOURNOI_NON_SPECIFIE);
-					dialog.open();
+					InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION, MESSAGE_TOURNOI_NON_SPECIFIE, shell, SWT.OK);
 				}
 				
 			}

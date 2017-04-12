@@ -1,22 +1,38 @@
 package modele;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-
+@Getter
 public class Configuration {
 
     private static Configuration instance;
+
+    @Setter
     private int nbEpreuve;
+    @Setter
     private int nbJoueurEquipe;
+    @Setter
     private int nbTour;
+    @Setter
     private String tarif;
+    @Setter
     private String saveFile;
-    private LinkedList<String> prevFile;
+    @Setter
     private boolean isLockedInsc;
+    @Setter
     private boolean[] tourFini;
+
+    private LinkedList<String> prevFile;
+
+
+
 
     public static Configuration getInstance() {
         if (instance == null) {
@@ -113,70 +129,9 @@ public class Configuration {
         return prevFile;
     }
 
-    public int getNbEpreuve() {
-        return nbEpreuve;
-    }
-
-    public void setNbEpreuve(int nbEpreuve) {
-        this.nbEpreuve = nbEpreuve;
-    }
-
-    public int getNbJoueurEquipe() {
-        return nbJoueurEquipe;
-    }
-
-    public void setNbJoueurEquipe(int nbJoueurEquipe) {
-        this.nbJoueurEquipe = nbJoueurEquipe;
-    }
-
-    public int getNbTour() {
-        return nbTour;
-    }
-
-    public void setNbTour(int nbTour) {
-        this.nbTour = nbTour;
-    }
-
-    public String getTarif() {
-        return tarif;
-    }
-
-    public void setTarif(String tarif) {
-        this.tarif = tarif;
-    }
-
-    public String getSaveFile() {
-        return saveFile;
-    }
-
-    public void setSaveFile(String saveFile) {
-        this.saveFile = saveFile;
-    }
-
-    public boolean isLockedInsc() {
-        return isLockedInsc;
-    }
-
-    public void setLockedInsc(boolean isLockedInsc) {
-        this.isLockedInsc = isLockedInsc;
-    }
-
-    /**
-     * @return the tourFini
-     */
-    public boolean[] getTourFini() {
-        return tourFini;
-    }
-
-    /**
-     * @param tourFini the tourFini to set
-     */
-    public void setTourFini(boolean[] tourFini) {
-        this.tourFini = tourFini;
-    }
-
     public void setTourFini(boolean fini, int index) {
         this.tourFini[index] = fini;
     }
+
 
 }
