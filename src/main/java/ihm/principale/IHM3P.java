@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import utils.InterfaceUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+
+import static ihm.fenetre.PreferenceIHM.MESSAGE_REINITIALISATION;
 
 public class IHM3P {
 
@@ -134,7 +137,7 @@ public class IHM3P {
         tabBtnVerrouillerTour = new Button[config.getNbTour()];
     }
 
-    public void lancerHM() {
+    public void lancerIHM() {
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -209,11 +212,7 @@ public class IHM3P {
      * @param event event
      */
     private void lancerDialogExitApplication(Event event) {
-        MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO | SWT.CANCEL);
-
-        dialog.setText(TexteIHM.ENREGISTREMENT);
-        dialog.setMessage(MESSAGE_DEMANDE_SAVE_AVANT_EXIT);
-        int i = dialog.open();
+        int i = InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ENREGISTREMENT, MESSAGE_DEMANDE_SAVE_AVANT_EXIT, fenetre, SWT.YES | SWT.NO | SWT.CANCEL);
         if (i == SWT.YES) {
             // Enregistre et ferme l'application
             save.enregistrer(config.getSaveFile(), equipes, epreuves);
@@ -713,17 +712,19 @@ public class IHM3P {
     }
 
     private void changementConfig(final ConfigTournoi configTournoi) {
-        int nbTour = configTournoi.getNombreTour();
-        int nbEpreuve = configTournoi.getEpreuves().size();
-        for (Equipe e : equipes) {
-            e.setEquipesJouees(new int[nbTour]);
-            e.setPartiesGagnees(new int[nbTour]);
-            e.setScores(new int[nbTour][nbEpreuve]);
-        }
-        config.setNbEpreuve(nbEpreuve);
-        config.setTourFini(new boolean[nbTour]);
-        config.setLockedInsc(false);
+        config.setNbEpreuve(configTournoi.getEpreuves().size());
+        config.setTarif(configTournoi.getTarif());
+        config.setNbTour(configTournoi.getNombreTour());
+    }
 
+    private void resetScoreEquipes() {
+        for (Equipe e : equipes) {
+            e.setEquipesJouees(new int[config.getNbTour()]);
+            e.setPartiesGagnees(new int[config.getNbTour()]);
+            e.setScores(new int[config.getNbTour()][config.getNbEpreuve()]);
+        }
+        config.setLockedInsc(false);
+        config.setTourFini(new boolean[config.getNbTour()]);
     }
 
     // Fonction creation de contenu d'ihm **************************************
@@ -763,10 +764,7 @@ public class IHM3P {
                                 affichageEquipeScore(indexOnglet - 1, tablesScore.get(indexOnglet - 1));
                             } else {
                                 onglet.setSelection(1);
-                                MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                                dialog.setText(TexteIHM.Titre.ATTENTION);
-                                dialog.setMessage(MESSAGE_TOUR_PRECEDENT_NON_TERMINE);
-                                dialog.open();
+                                InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_TOUR_PRECEDENT_NON_TERMINE, fenetre, SWT.OK);
                             }
 
                         } else {
@@ -791,20 +789,19 @@ public class IHM3P {
 
                         // afficherClassFinal(tours, listTablesClass.get(listTablesClass.size() - 1));
                     }
-                } else //Conditions d'inscription INvalidés
+                }
+                else //Conditions d'inscription INvalidés
                 {
                     if (!(onglet.getSelectionIndex() < 1) && !(onglet.getSelectionIndex() > config.getNbTour())) {
-                        MessageBox dialog = new MessageBox(fenetre, SWT.ICON_WARNING);
-                        dialog.setText(TexteIHM.Titre.ATTENTION);
                         if (!config.isLockedInsc()) {
                             onglet.setSelection(0);
-                            dialog.setMessage(MESSAGE_TOUR_PRECEDENT_NON_VERROUILLE);
+                            InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_TOUR_PRECEDENT_NON_VERROUILLE, fenetre, SWT.ICON_WARNING);
+
                         } else if (equipes.size() <= config.getNbTour()) {
                             onglet.setSelection(0);
-                            dialog.setMessage(MESSAGE_NOMBRE_EQUIPE_INSUFFISANTE);
-                        }
+                            InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_NOMBRE_EQUIPE_INSUFFISANTE, fenetre, SWT.ICON_WARNING);
 
-                        dialog.open();
+                        }
                     }
 
                 }
@@ -990,7 +987,7 @@ public class IHM3P {
         miExit.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
-                save.enregistrer(config.getSaveFile(), equipes, epreuves); // ?
+                save.enregistrer(config.getSaveFile(), equipes, epreuves); // TODO ???
                 fenetre.dispose();
             }
 
@@ -1028,8 +1025,17 @@ public class IHM3P {
 
                 ConfigTournoi result = prefIHM.open(config, epreuves);
                 if (result != null) {
-                    changementConfig(result);
+
+                    if(doitReinitialiserTournoi(result))
+                    {
+                        int i = InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION, MESSAGE_REINITIALISATION, fenetre, SWT.YES | SWT.NO);
+                        if(i == SWT.YES)
+                        {
+                            resetScoreEquipes();
+                        }
+                    }
                     epreuves = result.getEpreuves();
+                    changementConfig(result);
                     resetAffichage();
                     createContents();
                     initAffichage(tableInsc);
@@ -1049,10 +1055,7 @@ public class IHM3P {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
 
-                MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                dialog.setText(MESSAGE_REINITIALISATION_TOURNOI);
-                dialog.setMessage(MESSAGE_CONFIRMATION_REINITIALISATION_TOURNOI);
-                int i = dialog.open();
+                int i = InterfaceUtils.ouvrirDialogueTexte(MESSAGE_REINITIALISATION_TOURNOI, MESSAGE_CONFIRMATION_REINITIALISATION_TOURNOI, fenetre, SWT.YES | SWT.NO);
 
                 if (i == SWT.YES) {
                     save.enregistrer(config.getSaveFile().replaceAll(TexteIHM.EXTENSION_SLR, FIN_FICHIER_OLD_SLR), equipes, epreuves); // Création d'un backup ?
@@ -1103,6 +1106,17 @@ public class IHM3P {
         return listRenc;
     }
 
+    /**
+     * Si les epreuves, nombre de joueur par equipe ou le nombre de tour est different de la configuration actuelle alors on renvoie vrai
+     * @param configTournoi
+     * @return
+     */
+    boolean doitReinitialiserTournoi(final ConfigTournoi configTournoi){
+        return !(configTournoi.getEpreuves().equals(epreuves)
+                && configTournoi.getNombreJoueurEquipe() == config.getNbJoueurEquipe()
+                && configTournoi.getNombreTour() == config.getNbTour());
+    }
+
     private void creerInscription(TabFolder onglet) {
         GridData gData;
         Composite compInscription = new Composite(onglet, SWT.None);
@@ -1143,10 +1157,7 @@ public class IHM3P {
             @Override
             public void mouseDoubleClick(MouseEvent arg0) {
                 if (config.isLockedInsc()) {
-                    MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                    dialog.setText(TexteIHM.Titre.ATTENTION);
-                    dialog.setMessage(MESSAGE_INSCRIPTION_VERROUILLEES);
-                    dialog.open();
+                    InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_INSCRIPTION_VERROUILLEES , fenetre, SWT.OK);
                 } else {
                     ajoutModifEquipe(tableInsc);
                     //Equipe.effacerScore(equipes);
@@ -1176,7 +1187,7 @@ public class IHM3P {
             @Override
             public void widgetSelected(SelectionEvent arg0) {
                 if (config.isLockedInsc()) {
-                    ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_INSCRIPTION_VERROUILLEES, fenetre, SWT.OK);
+                    InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_INSCRIPTION_VERROUILLEES, fenetre, SWT.OK);
                 } else {
                     //Equipe.effacerScore(equipes);
                     ajoutModifEquipe(tableInsc);
@@ -1201,10 +1212,7 @@ public class IHM3P {
             public void widgetSelected(SelectionEvent arg0) {
                 int index = tableInsc.getSelectionIndex();
                 if (index != -1 && !config.isLockedInsc()) {
-                    MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                    dialog.setText(SUPPRESION_EQUIPE);
-                    dialog.setMessage(IHM3P.MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE);
-                    int i = dialog.open();
+                    int i = InterfaceUtils.ouvrirDialogueTexte(SUPPRESION_EQUIPE, IHM3P.MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE, fenetre, SWT.YES | SWT.NO);
                     if (i == SWT.YES) {
                         supprimerEquipe(index);
                         initAffichage(tableInsc);
@@ -1214,10 +1222,7 @@ public class IHM3P {
                     estDonneesAJour = false;
                 } else {
                     if (config.isLockedInsc()) {
-                        MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                        dialog.setText(TexteIHM.Titre.ATTENTION);
-                        dialog.setMessage(MESSAGE_INSCRIPTION_VERROUILLEES);
-                        dialog.open();
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_INSCRIPTION_VERROUILLEES, fenetre, SWT.OK);
                     }
                 }
             }
@@ -1258,7 +1263,7 @@ public class IHM3P {
                                 btLock.setText(VERROUILLER_INSCRIPTION);
 
                             } else {
-                                ouvrirDialogueTexte(TOURNOI_COMMENCE, MESSAGE_TOURNOI_COMMENCE, fenetre, SWT.OK);
+                                InterfaceUtils.ouvrirDialogueTexte(TOURNOI_COMMENCE, MESSAGE_TOURNOI_COMMENCE, fenetre, SWT.OK);
 
                             }
                         } else {
@@ -1274,16 +1279,10 @@ public class IHM3P {
                         btnSuppr.setEnabled(true);
                         btLock.setText(VERROUILLER_INSCRIPTION);
 
-                        MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                        dialog.setText(TexteIHM.Titre.ATTENTION);
-                        dialog.setMessage(MESSAGE_NOMBRE_EQUIPE_IMPAIR);
-                        dialog.open();
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_NOMBRE_EQUIPE_IMPAIR, fenetre, SWT.OK);
                     }
                 } else {
-                    MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                    dialog.setText(TexteIHM.Titre.ATTENTION);
-                    dialog.setMessage(NOMBRE_EQUIPES_INSCRITE_INSUFFISANTE);
-                    dialog.open();
+                    InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, NOMBRE_EQUIPES_INSCRITE_INSUFFISANTE, fenetre, SWT.OK);
                 }
 
             }
@@ -1311,14 +1310,13 @@ public class IHM3P {
             public void widgetSelected(SelectionEvent arg0) {
                 int index;
                 if ((index = tableInsc.getSelectionIndex()) != -1 && config.isLockedInsc()) {
-                    MessageBox dialog = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                    dialog.setText(SUPPRESION_EQUIPE);
-                    dialog.setMessage(MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE);
-                    int i = dialog.open();
+                    int i = InterfaceUtils.ouvrirDialogueTexte(SUPPRESION_EQUIPE, MESSAGE_CONFIRMATION_SUPPRESSION_EQUIPE, fenetre, SWT.YES | SWT.NO);
                     if (i == SWT.YES) {
                         supprimerEquipe(index);
                         initAffichage(tableInsc);
                     }
+
+
 
                     save.enregistrer(config.getSaveFile(), equipes, epreuves);
                     estDonneesAJour = false;
@@ -1334,13 +1332,6 @@ public class IHM3P {
         // tableInsc.setMenu(mClicDroit);
         ongletPrincipaux.get(0).setControl(compInscription);
 
-    }
-
-    private int ouvrirDialogueTexte(String titre, String message, Shell fenetre, int typeBouton) {
-        MessageBox dialog = new MessageBox(fenetre, typeBouton);
-        dialog.setText(titre);
-        dialog.setMessage(message);
-        return dialog.open();
     }
 
     private void creerTour(TabFolder onglet) {
@@ -1400,10 +1391,7 @@ public class IHM3P {
                     if (listRenc.size() > 0) {
                         pdf.createPdfFeuilleMarque(finalIndex + 1, listRenc, epreuves);
                     } else {
-                        MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                        dialog.setText(TexteIHM.INFORMATIONS);
-                        dialog.setMessage(MESSAGE_LISTE_RENCONTRE_VIDE);
-                        dialog.open();
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.INFORMATIONS, MESSAGE_LISTE_RENCONTRE_VIDE, fenetre, SWT.OK);
                     }
 
                 }
@@ -1491,10 +1479,7 @@ public class IHM3P {
                     if (listRenc.size() > 0) {
                         pdf.createPdfRencontre(finalIndex + 1, tableRenc);
                     } else {
-                        MessageBox dialog = new MessageBox(fenetre, SWT.OK);
-                        dialog.setText(TexteIHM.INFORMATIONS);
-                        dialog.setMessage(MESSAGE_LISTE_RENCONTRE_VIDE);
-                        dialog.open();
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.INFORMATIONS, MESSAGE_LISTE_RENCONTRE_VIDE, fenetre, SWT.OK);
                     }
 
                 }
@@ -1565,20 +1550,17 @@ public class IHM3P {
 
                                 }
                             } else {
-                                ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_ERREUR_EQUIPE_SEULE, fenetre, SWT.OK);
+                                InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_ERREUR_EQUIPE_SEULE, fenetre, SWT.OK);
 
                             }
 
                         }
                     } else {
-                        MessageBox msgBox = new MessageBox(fenetre, SWT.OK);
-                        msgBox.setText(TexteIHM.Titre.ERREUR);
                         if (config.getTourFini()[finalIndex]) {
-                            msgBox.setMessage(MESSAGE_TOUR_FINI_VERROUILLAGE_SCORE);
+                            InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_TOUR_FINI_VERROUILLAGE_SCORE, fenetre, SWT.OK);
                         } else {
-                            msgBox.setMessage(MESSAGE_TOUR_PRECEDENT_NON_FINI);
+                            InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_TOUR_PRECEDENT_NON_FINI, fenetre, SWT.OK);
                         }
-                        msgBox.open();
                     }
                 }
             });
@@ -1617,10 +1599,7 @@ public class IHM3P {
                 @Override
                 public void widgetSelected(SelectionEvent se) {
                     if (Equipe.tourFini(equipes, epreuves.size(), finalIndex)) {
-                        MessageBox msgBox = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                        msgBox.setText(TexteIHM.Titre.ATTENTION);
-                        msgBox.setMessage(MESSAGE_CONFIRMATION_VERROUILLAGE_TOUR);
-                        int result = msgBox.open();
+                        int result = InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ATTENTION, MESSAGE_CONFIRMATION_VERROUILLAGE_TOUR, fenetre, SWT.YES | SWT.NO);
 
                         if (result == SWT.YES) {
                             config.getTourFini()[finalIndex] = true;
@@ -1628,7 +1607,7 @@ public class IHM3P {
                             btVerrouillerTour.setEnabled(false);
                         }
                     } else {
-                        ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_TOUR_NON_FINI, fenetre, SWT.OK);
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.Titre.ERREUR, MESSAGE_TOUR_NON_FINI, fenetre, SWT.OK);
 
                     }
 

@@ -5,8 +5,11 @@
  */
 package utils;
 
+import modele.Epreuve;
+
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -67,5 +70,9 @@ public class GestTourUtils
             File file = new File(cheminFichier);
             return file.getName().replaceFirst(".slr$", "");
     }
-    
+
+    public static List<Epreuve> copyEpreuves(final List<Epreuve> epreuvesToCopy){
+        return epreuvesToCopy.stream().map(Epreuve::new).collect(Collectors.toList());
+    }
+
 }

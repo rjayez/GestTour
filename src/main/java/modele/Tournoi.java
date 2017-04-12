@@ -59,7 +59,7 @@ public class Tournoi
                 impression = Impression.getInstance();
 
                 ihm = new IHM3P(equipes, sauvegarde, epreuves);
-                ihm.lancerHM();
+                ihm.lancerIHM();
             }
             catch (Exception e)
             {

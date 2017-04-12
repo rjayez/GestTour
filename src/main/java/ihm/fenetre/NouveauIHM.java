@@ -6,11 +6,19 @@ import modele.Epreuve;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
+import utils.InterfaceUtils;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 public class NouveauIHM extends Dialog
 {
@@ -47,7 +55,7 @@ public class NouveauIHM extends Dialog
      * @param epreuves
 	 * @return the result
 	 */
-	public Object open(Configuration config, ArrayList<Epreuve> epreuves)
+	public Object open(Configuration config, List<Epreuve> epreuves)
 	{
 		createContents(config, epreuves);
 		shell.open();
@@ -66,7 +74,7 @@ public class NouveauIHM extends Dialog
 	/**
 	 * Create contents of the dialog.
 	 */
-	private void createContents(final Configuration config, ArrayList<Epreuve> epreuves)
+	private void createContents(final Configuration config, List<Epreuve> epreuves)
 	{
 		shell = new Shell(getParent(), getStyle());
 		shell.setSize(560, 199);
@@ -127,19 +135,13 @@ public class NouveauIHM extends Dialog
                     }
                     else
                     {
-                        MessageBox dialog = new MessageBox(shell, SWT.OK);
-                        dialog.setText(TexteIHM.ATTENTION);
-                        dialog.setMessage(FICHIER_DEJA_EXISTANT);
-                        dialog.open();
+						InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION, FICHIER_DEJA_EXISTANT, shell, SWT.OK);
                     }
 					
 				}
 				else
 				{
-					MessageBox dialog = new MessageBox(shell, SWT.OK);
-					dialog.setText(TexteIHM.ATTENTION);
-					dialog.setMessage(MESSAGE_TOURNOI_NON_SPECIFIE);
-					dialog.open();
+					InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION, MESSAGE_TOURNOI_NON_SPECIFIE, shell, SWT.OK);
 				}
 				
 			}

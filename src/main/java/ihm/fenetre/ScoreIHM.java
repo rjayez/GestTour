@@ -8,6 +8,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import utils.InterfaceUtils;
 
 import java.util.*;
 import java.util.List;
@@ -103,11 +104,7 @@ public class ScoreIHM extends Dialog {
                     fenetre.dispose();
                 } else {
                     result = false;
-                    MessageBox dialog = new MessageBox(fenetre, SWT.ERROR);
-                    dialog.setText(TexteIHM.ATTENTION_EXCLAMATION);
-                    dialog.setMessage(MESSAGE_SCORE_INCORRECT_NOMBRE_EPREUVE_GAGNE_ANORMAUX);
-                    dialog.open();
-
+                    InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION_EXCLAMATION, MESSAGE_SCORE_INCORRECT_NOMBRE_EPREUVE_GAGNE_ANORMAUX, fenetre, SWT.ERROR);
                 }
             }
 
@@ -145,10 +142,8 @@ public class ScoreIHM extends Dialog {
         btnRAZ.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent se) {
-                MessageBox messageBox = new MessageBox(fenetre, SWT.YES | SWT.NO);
-                messageBox.setMessage(MESSAGE_RAZ_SCORE);
-                messageBox.setText(TexteIHM.RAZ);
-                int reponse = messageBox.open();
+
+                int reponse = InterfaceUtils.ouvrirDialogueTexte(TexteIHM.RAZ, MESSAGE_RAZ_SCORE, fenetre, SWT.YES | SWT.NO);
                 if (reponse == SWT.YES) {
                     for (int i = 0; i < epreuves.size(); i++) {
                         eq1.setScores(indexTour, i, 0);
@@ -191,11 +186,7 @@ public class ScoreIHM extends Dialog {
                         fenetre.dispose();
                     } else {
                         result = false;
-                        MessageBox dialog = new MessageBox(fenetre, SWT.ERROR);
-                        dialog.setText(TexteIHM.ATTENTION_EXCLAMATION);
-                        dialog.setMessage(MESSAGE_SCORE_INCORRECT_NOMBRE_EPREUVE_GAGNE_ANORMAUX);
-                        dialog.open();
-
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ATTENTION_EXCLAMATION, MESSAGE_SCORE_INCORRECT_NOMBRE_EPREUVE_GAGNE_ANORMAUX, fenetre, SWT.ERROR);
                     }
                 }
             });
@@ -208,10 +199,7 @@ public class ScoreIHM extends Dialog {
                         Integer tbValue = Integer.parseInt(tbScoreEq1.getText());
                         if (tbValue >= epr.getNbPointGagnant()) {
                             if (tbValue > epr.getNbPointGagnant()) {
-                                MessageBox msgBox = new MessageBox(fenetre);
-                                msgBox.setMessage(SCORE_SUP_SCORE_MAX_EPREUVE);
-                                msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
-                                msgBox.open();
+                                InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ERREUR_DE_SAISIE, SCORE_SUP_SCORE_MAX_EPREUVE, fenetre);
                             }
 
                             tbScoreEq1.setText(Integer.toString(epr.getNbPointGagnant()));
@@ -219,21 +207,14 @@ public class ScoreIHM extends Dialog {
 
                         } else if (tbValue < 0) {
                             tbScoreEq1.setText("0");
-
-                            MessageBox msgBox = new MessageBox(fenetre);
-                            msgBox.setMessage(MESSAGE_SCORE_NEGATIF);
-                            msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
-                            msgBox.open();
+                            InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ERREUR_DE_SAISIE, MESSAGE_SCORE_NEGATIF, fenetre);
                         } else // Valeur correct et inférieur au nombre de point gagnant
                         {
                             eq1.setScores(indexTour, index, tbValue);
                         }
 
                     } catch (Exception e) {
-                        MessageBox msgBox = new MessageBox(fenetre);
-                        msgBox.setMessage(MESSAGE_NOT_A_NUMBER);
-                        msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
-                        msgBox.open();
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ERREUR_DE_SAISIE, MESSAGE_NOT_A_NUMBER, fenetre);
                     }
                 }
 
@@ -259,10 +240,7 @@ public class ScoreIHM extends Dialog {
 
                         if (tbValue >= epr.getNbPointGagnant()) {
                             if (tbValue > epr.getNbPointGagnant()) {
-                                MessageBox msgBox = new MessageBox(fenetre);
-                                msgBox.setMessage(SCORE_SUP_SCORE_MAX_EPREUVE);
-                                msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
-                                msgBox.open();
+                                InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ERREUR_DE_SAISIE, SCORE_SUP_SCORE_MAX_EPREUVE, fenetre);
                             }
 
                             tbScoreEq2.setText(Integer.toString(epr.getNbPointGagnant()));
@@ -270,20 +248,14 @@ public class ScoreIHM extends Dialog {
 
                         } else if (tbValue < 0) {
                             tbScoreEq2.setText("0");
-                            MessageBox msgBox = new MessageBox(fenetre);
-                            msgBox.setMessage(MESSAGE_SCORE_NEGATIF);
-                            msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
-                            msgBox.open();
+                            InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ERREUR_DE_SAISIE, MESSAGE_SCORE_NEGATIF, fenetre);
                         } else // Valeur correct !
                         {
                             eq2.setScores(indexTour, index, tbValue);
                         }
 
                     } catch (Exception e) {
-                        MessageBox msgBox = new MessageBox(fenetre);
-                        msgBox.setMessage(MESSAGE_NOT_A_NUMBER);
-                        msgBox.setText(TexteIHM.ERREUR_DE_SAISIE);
-                        msgBox.open();
+                        InterfaceUtils.ouvrirDialogueTexte(TexteIHM.ERREUR_DE_SAISIE, MESSAGE_NOT_A_NUMBER, fenetre);
                     }
                 }
 

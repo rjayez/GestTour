@@ -37,7 +37,6 @@ public class InscriptionIHM extends Dialog
         this.exitWithOk = false;
         int nbTab = 5 + 3 * config.getNbJoueurEquipe();
         listTab = new Control[nbTab];
-        //result = new Equipe(config);
     }
 
     public InscriptionIHM(Shell parent, Configuration config)
@@ -77,7 +76,6 @@ public class InscriptionIHM extends Dialog
             {
                 display.sleep();
             }
-
         }
 
         return result;
