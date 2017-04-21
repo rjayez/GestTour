@@ -76,13 +76,13 @@ public class ScoreIHM extends Dialog {
         labEquipe.setText("Equipe :");
 
         Label labJ1 = new Label(fenetre, SWT.CENTER);
-        labJ1.setText("N°" + eq1.getNumeroStr());
+        labJ1.setText("N\u00b0" + eq1.getNumeroStr());
         gData = new GridData();
         gData.horizontalAlignment = SWT.CENTER;
         labJ1.setLayoutData(gData);
 
         Label labEq2 = new Label(fenetre, 0);
-        labEq2.setText("N°" + eq2.getNumeroStr());
+        labEq2.setText("N\u00b0" + eq2.getNumeroStr());
         gData = new GridData();
         gData.horizontalAlignment = SWT.CENTER;
         labEq2.setLayoutData(gData);

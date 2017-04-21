@@ -5,6 +5,7 @@ import modele.Categorie;
 import modele.Configuration;
 import modele.Equipe;
 import modele.Joueur;
+import org.apache.commons.lang3.text.WordUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -417,15 +418,15 @@ public class InscriptionEquipeIHM extends Dialog
             tb.addModifyListener(arg0 -> {
                 if (catJ == catJoueur.nom)
                 {
-                    joueur.setNom(((Text) arg0.widget).getText());
+                    joueur.setNom(WordUtils.capitalizeFully(((Text) arg0.widget).getText()));
                 }
                 if (catJ == catJoueur.prenom)
                 {
-                    joueur.setPrenom(((Text) arg0.widget).getText());
+                    joueur.setPrenom(WordUtils.capitalizeFully(((Text) arg0.widget).getText()));
                 }
                 if (catJ == catJoueur.ville)
                 {
-                    joueur.setVille(((Text) arg0.widget).getText());
+                    joueur.setVille(WordUtils.capitalizeFully(((Text) arg0.widget).getText()));
                 }
 
             });

@@ -35,9 +35,9 @@ public class Impression {
     public static final String TERRAIN = "Terrain";
     public static final String TOTAL_DE_VICTOIRE = "Total de\n Victoire";
     public static final String COMMENTAIRES = "Commentaires";
-    public static final String CATEGORIE = "Catégorie";
+    public static final String CATEGORIE = "Cat\u00e9gorie";
     public static final String SCORE = "Score";
-    public static final String EPREUVES_GAGNEES = "Epreuves Gagnées";
+    public static final String EPREUVES_GAGNEES = "Epreuves Gagn\u00e9es";
     public static final String NUMERO_POINT = "N\u00b0.";
     public static final String CLASSEMENT_CAT_ABREV = "Cl. Cat.";
     public static final String CLASSEMEN_ABREV = "Cl.";

@@ -7,6 +7,7 @@ import ihm.fenetre.PreferenceIHM;
 import ihm.fenetre.ScoreIHM;
 import modele.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -290,9 +291,9 @@ public class IHM3P {
             strInfo[0] = eq.getNumeroStr();
             int i = 1;
             for (Joueur j : eq.getJoueurs()) {
-                strInfo[i] = j.getNom();
-                strInfo[i + 1] = j.getPrenom();
-                strInfo[i + 2] = j.getVille();
+                strInfo[i] = WordUtils.capitalizeFully(j.getNom());
+                strInfo[i + 1] = WordUtils.capitalizeFully(j.getPrenom());
+                strInfo[i + 2] = WordUtils.capitalizeFully(j.getVille());
                 i += 4;
             }
 
@@ -659,10 +660,10 @@ public class IHM3P {
                 strRenc = new String[5];
                 Equipe eq2 = getEquipe(eq.getEquipesJouees()[indexTour]);
                 strRenc[0] = eq.getNumeroStr();
-                strRenc[1] = eq.getNomsJoueur();
+                strRenc[1] = WordUtils.capitalizeFully(eq.getNomsJoueur());
 
                 strRenc[3] = eq2.getNumeroStr();
-                strRenc[4] = eq2.getNomsJoueur();
+                strRenc[4] = WordUtils.capitalizeFully(eq2.getNomsJoueur());
 
                 TableItem ti = new TableItem(table, 0);
                 ti.setText(strRenc);
